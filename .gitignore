@@ -1,0 +1,22 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/**/bin/Debug/**
+/**/obj/**
+/**/obj/Debug/**
+/app_for_xml/Logs
+**.suo
+**.mdf
+**.ldf
+**.user
+/**/bin
+/**/obj
+/.vs
+.vs/**
+packages
+<<<<<<< HEAD
+packages/**
+=======
+packages/**
+>>>>>>> 0c4160c747adcb6d89abbef5f911b5e1cb91f46c
