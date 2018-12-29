@@ -17,6 +17,7 @@ namespace ShutdownDiagnostic
     {
         private IDiagnosticView _view;
         private IDiagnosticViewModel _model;
+        private bool _isWatching;
 
         public DiagnosticPresenter(IDiagnosticView diagnosticView, IDiagnosticViewModel model)
         {
@@ -31,7 +32,48 @@ namespace ShutdownDiagnostic
 
         public void Initialize()
         {
+            _isWatching = false;
+            _view.Attach(this);
             ReadConfig();
+        }
+
+        public void SetAllTrue() {
+            _model.VerificationList.SingleOrDefault(x => x.Order == 1).Statements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 1).Statements.FirstOrDefault().Value = "true";
+
+            _model.VerificationList.SingleOrDefault(x => x.Order == 2).Statements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 2).Statements.FirstOrDefault().Value = "true";
+
+            _model.VerificationList.SingleOrDefault(x => x.Order == 3).Statements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 3).Statements.FirstOrDefault().Value = "true";
+
+            _model.VerificationList.SingleOrDefault(x => x.Order == 4).Statements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 4).Statements.FirstOrDefault().Value = "true";
+            //_model.VerificationList.FirstOrDefault().Statements.FirstOrDefault().Value = "123";
+            //_model.VerificationList.FirstOrDefault().Statements.FirstOrDefault().Quality = "good";
+            RefreshView();
+            AllVerified();
+
+        }
+
+        public void OnStarWatch()
+        {
+            _isWatching = true;
+            _model.VerificationList.SingleOrDefault(x => x.Order == 1).Statements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 1).Statements.FirstOrDefault().Value = "true";
+
+            _model.VerificationList.SingleOrDefault(x => x.Order == 2).Statements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 2).Statements.FirstOrDefault().Value = "false";
+
+            _model.VerificationList.SingleOrDefault(x => x.Order == 3).Statements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 3).Statements.FirstOrDefault().Value = "true";
+
+            _model.VerificationList.SingleOrDefault(x => x.Order == 4).Statements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 4).Statements.FirstOrDefault().Value = "true";
+            //_model.VerificationList.FirstOrDefault().Statements.FirstOrDefault().Value = "123";
+            //_model.VerificationList.FirstOrDefault().Statements.FirstOrDefault().Quality = "good";
+            RefreshView();
+            AllVerified();
         }
 
         public void ReadConfig()
@@ -68,7 +110,7 @@ namespace ShutdownDiagnostic
                                             };
 
                                             var tagsList = server.Elements("tag");
-                                            if (tagsList !=null && tagsList.Any())
+                                            if (tagsList != null && tagsList.Any())
                                             {
                                                 var tagListItems = new List<Statement>();
                                                 foreach (var statement in tagsList)
@@ -76,9 +118,10 @@ namespace ShutdownDiagnostic
                                                     var statementCaption = statement.Attribute("caption");
                                                     var statementType = statement.Attribute("type");
                                                     var statementVerifyIf = statement.Attribute("verifyif");
+                                                    var allowQualityBad = statement.Attribute("allowbad");
                                                     var statementTag = statement.Value;
 
-                                                    if (!string.IsNullOrEmpty(statementTag) && statementCaption !=null && statementType !=null && statementVerifyIf !=null)
+                                                    if (!string.IsNullOrEmpty(statementTag) && statementCaption != null && statementType != null && statementVerifyIf != null)
                                                     {
                                                         var statementItem = new Statement
                                                         {
@@ -86,24 +129,31 @@ namespace ShutdownDiagnostic
                                                             FullTag = statementTag,
                                                             Id = Guid.NewGuid()
                                                         };
+                                                        if (allowQualityBad != null)
+                                                        {
+                                                            if (Boolean.TryParse(allowQualityBad.Value, out bool result))
+                                                                statementItem.AllowBadQuality = result;
+                                                            else statementItem.AllowBadQuality = false;
+                                                        }
+                                                        else statementItem.AllowBadQuality = false;
 
                                                         switch (statementType.Value)
                                                         {
-                                                            case "int":
-                                                                {
-                                                                    statementItem.ParamType = typeof(bool).ToString();
-                                                                    statementItem.VerifyIf = Convert.ToInt32(statementVerifyIf.Value);
-                                                                    break;
-                                                                }
                                                             case "bool":
                                                                 {
-                                                                    statementItem.ParamType = typeof(int).ToString();
+                                                                    statementItem.ParamType = "bool";
                                                                     statementItem.VerifyIf = Convert.ToBoolean(statementVerifyIf.Value);
+                                                                    break;
+                                                                }
+                                                            case "int":
+                                                                {
+                                                                    statementItem.ParamType = "int";
+                                                                    statementItem.VerifyIf = Convert.ToInt32(statementVerifyIf.Value);
                                                                     break;
                                                                 }
                                                             default:
                                                                 {
-                                                                    statementItem.ParamType = typeof(int).ToString();
+                                                                    statementItem.ParamType = "int";
                                                                     statementItem.VerifyIf = (int)statementVerifyIf;
                                                                     break;
                                                                 }
@@ -127,12 +177,66 @@ namespace ShutdownDiagnostic
                 }
                 else MessageBox.Show("Папка 'configs' не обнаружена в текущей дериктории", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _model.VerificationList = model;
+                RefreshView();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+        }
+        #region Callbacks
+
+        public void RefreshView()
+        {
+            _view.RenderGrid(_model);
+        }
+
+        public void OnShutdown()
+        {
+            MessageBox.Show(null, "Выключение сервера", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        #endregion
+
+        public bool AllVerified()
+        {
+            if (_isWatching)
+            {
+                foreach (var server in _model.VerificationList)
+                {
+                    foreach (var statement in server.Statements)
+                    {
+                        if (!statement.AllowBadQuality && statement.Quality != "GOOD")
+                        {
+                            _view.IsShutdowActive = false;
+                            return false;
+                        };
+
+                        if (statement.Quality == "GOOD")
+                        {
+                            switch (statement.ParamType)
+                            {
+                                case "bool":
+                                    {
+                                        try
+                                        {
+                                            var value = bool.Parse(statement.Value);
+                                            if (value != (bool)statement.VerifyIf)
+                                            {
+                                                _view.IsShutdowActive = false;
+                                                return false;
+                                            };
+                                        }
+                                        catch { }
+                                        break;
+                                    }
+                            }
+                        }
+                    }
+                }
+            }
+            _view.IsShutdowActive = true;
+            return true;
         }
     }
 }

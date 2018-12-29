@@ -1,4 +1,5 @@
-﻿using ShutdownDiagnostic.Interface.Presenter;
+﻿using ShutdownDiagnostic.Interface.Model;
+using ShutdownDiagnostic.Interface.Presenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace ShutdownDiagnostic.Interface.View
 {
     public interface IDiagnosticView : IView<IDiagnosticPresenterCallback>
     {
+        bool IsShutdowActive { set; }
         //Int32 ColumnCaption { get; set; }
         //Int32 ColumnTag { get; set; }
         //Int32 MnaNumber { get; set; }
@@ -18,6 +20,6 @@ namespace ShutdownDiagnostic.Interface.View
         //string Order { get; set; }
 
         ////void SetModel(IMnaViewModel model);
-        //void RenderParametersGrid();
+        void RenderGrid(IDiagnosticViewModel model);
     }
 }

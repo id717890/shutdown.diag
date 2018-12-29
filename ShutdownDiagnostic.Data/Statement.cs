@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShutdownDiagnostic.Data
 {
@@ -13,5 +9,8 @@ namespace ShutdownDiagnostic.Data
         public string FullTag { get; set; }
         public object VerifyIf { get; set; }
         public string ParamType { get; set; }
+        public string Value { get; set; }
+        public string Quality { get; set; }
+        public bool AllowBadQuality { get; set; }
     }
 }
