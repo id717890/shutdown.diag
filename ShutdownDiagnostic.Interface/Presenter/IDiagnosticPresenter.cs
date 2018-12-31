@@ -2,8 +2,8 @@
 {
     public interface IDiagnosticPresenter: IPresenter
     {
-        bool AllVerified();
+        void VerifyAllStatements();
         void ReadConfig();
-        void RefreshView();
+        void OnRefreshView();
     }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -37,43 +38,49 @@ namespace ShutdownDiagnostic
             ReadConfig();
         }
 
-        public void SetAllTrue() {
-            _model.VerificationList.SingleOrDefault(x => x.Order == 1).Statements.FirstOrDefault().Quality = "GOOD";
-            _model.VerificationList.SingleOrDefault(x => x.Order == 1).Statements.FirstOrDefault().Value = "true";
+        public void OnSetAllTrue() {
+            _model.VerificationList.SingleOrDefault(x => x.Order == 1).OpcStatements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 1).OpcStatements.FirstOrDefault().Value = "true";
 
-            _model.VerificationList.SingleOrDefault(x => x.Order == 2).Statements.FirstOrDefault().Quality = "GOOD";
-            _model.VerificationList.SingleOrDefault(x => x.Order == 2).Statements.FirstOrDefault().Value = "true";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 2).OpcStatements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 2).OpcStatements.FirstOrDefault().Value = "true";
 
-            _model.VerificationList.SingleOrDefault(x => x.Order == 3).Statements.FirstOrDefault().Quality = "GOOD";
-            _model.VerificationList.SingleOrDefault(x => x.Order == 3).Statements.FirstOrDefault().Value = "true";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 3).OpcStatements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 3).OpcStatements.FirstOrDefault().Value = "true";
 
-            _model.VerificationList.SingleOrDefault(x => x.Order == 4).Statements.FirstOrDefault().Quality = "GOOD";
-            _model.VerificationList.SingleOrDefault(x => x.Order == 4).Statements.FirstOrDefault().Value = "true";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 4).OpcStatements.FirstOrDefault().Quality = "GOOD";
+            _model.VerificationList.SingleOrDefault(x => x.Order == 4).OpcStatements.FirstOrDefault().Value = "true";
             //_model.VerificationList.FirstOrDefault().Statements.FirstOrDefault().Value = "123";
             //_model.VerificationList.FirstOrDefault().Statements.FirstOrDefault().Quality = "good";
-            RefreshView();
-            AllVerified();
 
+        }
+
+        public void OnStopWatch()
+        {
+            _isWatching = false;
+            _view.IsShutdowActive = false;
         }
 
         public void OnStarWatch()
         {
             _isWatching = true;
-            _model.VerificationList.SingleOrDefault(x => x.Order == 1).Statements.FirstOrDefault().Quality = "GOOD";
-            _model.VerificationList.SingleOrDefault(x => x.Order == 1).Statements.FirstOrDefault().Value = "true";
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 1).OpcStatements.FirstOrDefault().Quality = "GOOD";
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 1).OpcStatements.FirstOrDefault().Value = "true";
 
-            _model.VerificationList.SingleOrDefault(x => x.Order == 2).Statements.FirstOrDefault().Quality = "GOOD";
-            _model.VerificationList.SingleOrDefault(x => x.Order == 2).Statements.FirstOrDefault().Value = "false";
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 1).ServiceStatements.FirstOrDefault().Value = "1";
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 1).ServiceStatements.FirstOrDefault().IsVerified = true;
 
-            _model.VerificationList.SingleOrDefault(x => x.Order == 3).Statements.FirstOrDefault().Quality = "GOOD";
-            _model.VerificationList.SingleOrDefault(x => x.Order == 3).Statements.FirstOrDefault().Value = "true";
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 2).OpcStatements.FirstOrDefault().Quality = "GOOD";
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 2).OpcStatements.FirstOrDefault().Value = "false";
 
-            _model.VerificationList.SingleOrDefault(x => x.Order == 4).Statements.FirstOrDefault().Quality = "GOOD";
-            _model.VerificationList.SingleOrDefault(x => x.Order == 4).Statements.FirstOrDefault().Value = "true";
-            //_model.VerificationList.FirstOrDefault().Statements.FirstOrDefault().Value = "123";
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 3).OpcStatements.FirstOrDefault().Quality = "GOOD";
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 3).OpcStatements.FirstOrDefault().Value = "true";
+
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 4).OpcStatements.FirstOrDefault().Quality = "GOOD";
+            //_model.VerificationList.SingleOrDefault(x => x.Order == 4).OpcStatements.FirstOrDefault().Value = "true";
+            ////_model.VerificationList.FirstOrDefault().Statements.FirstOrDefault().Value = "123";
             //_model.VerificationList.FirstOrDefault().Statements.FirstOrDefault().Quality = "good";
-            RefreshView();
-            AllVerified();
+            //AllVerified();
         }
 
         public void ReadConfig()
@@ -99,6 +106,10 @@ namespace ShutdownDiagnostic
                                         XAttribute captionServer = server.Attribute("caption");
                                         XAttribute connectionStringServer = server.Attribute("connection");
                                         XAttribute orderServer = server.Attribute("order");
+                                        XAttribute hostName = server.Attribute("hostname");
+                                        XAttribute user = server.Attribute("user");
+                                        XAttribute password = server.Attribute("password");
+                                        XAttribute domain = server.Attribute("domain");
                                         if ((captionServer != null) && (connectionStringServer != null) && (orderServer != null))
                                         {
                                             var serverItem = new Server
@@ -106,13 +117,18 @@ namespace ShutdownDiagnostic
                                                 Id = Guid.NewGuid(),
                                                 Connectionstring = connectionStringServer.Value,
                                                 Caption = captionServer.Value,
-                                                Order = int.TryParse(orderServer.Value, out var order) ? order : 0
+                                                HostName = hostName != null ? hostName.Value : null,
+                                                User = user!= null ? user.Value : null,
+                                                Password = password != null ? password.Value : null,
+                                                Domain = domain != null ? domain.Value : null,
+                                                Order = int.TryParse(orderServer.Value, out var order) ? order : 0,
                                             };
 
+                                            #region Parse <tag>
                                             var tagsList = server.Elements("tag");
                                             if (tagsList != null && tagsList.Any())
                                             {
-                                                var tagListItems = new List<Statement>();
+                                                var tagListItems = new List<OpcStatement>();
                                                 foreach (var statement in tagsList)
                                                 {
                                                     var statementCaption = statement.Attribute("caption");
@@ -123,10 +139,10 @@ namespace ShutdownDiagnostic
 
                                                     if (!string.IsNullOrEmpty(statementTag) && statementCaption != null && statementType != null && statementVerifyIf != null)
                                                     {
-                                                        var statementItem = new Statement
+                                                        var statementItem = new OpcStatement
                                                         {
                                                             Caption = statementCaption.Value,
-                                                            FullTag = statementTag,
+                                                            TagValue = statementTag,
                                                             Id = Guid.NewGuid()
                                                         };
                                                         if (allowQualityBad != null)
@@ -161,8 +177,36 @@ namespace ShutdownDiagnostic
                                                         tagListItems.Add(statementItem);
                                                     }
                                                 }
-                                                serverItem.Statements = tagListItems;
+                                                serverItem.OpcStatements = tagListItems;
                                             }
+                                            #endregion
+
+                                            #region Parse <service>
+                                            var servicesList = server.Elements("service");
+                                            if (servicesList != null && servicesList.Any())
+                                            {
+                                                var serviceListItems = new List<ServiceStatement>();
+                                                foreach (var service in servicesList)
+                                                {
+                                                    var serviceCaption = service.Attribute("caption");
+                                                    var serviceVerifyIf = service.Attribute("verifyif");
+                                                    var serviceName = service.Value;
+
+                                                    if (!string.IsNullOrEmpty(serviceName) && serviceCaption != null && serviceVerifyIf != null)
+                                                    {
+                                                        var serviceItem = new ServiceStatement
+                                                        {
+                                                            Id = Guid.NewGuid(),
+                                                            Caption = serviceCaption.Value,
+                                                            VerifyIf = serviceVerifyIf.Value,
+                                                            TagValue = serviceName
+                                                        };
+                                                        serviceListItems.Add(serviceItem);
+                                                    }
+                                                }
+                                                serverItem.ServiceStatements = serviceListItems;
+                                            }
+                                            #endregion
                                             model.Add(serverItem);
                                         }
                                     }
@@ -177,7 +221,7 @@ namespace ShutdownDiagnostic
                 }
                 else MessageBox.Show("Папка 'configs' не обнаружена в текущей дериктории", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _model.VerificationList = model;
-                RefreshView();
+                OnRefreshView();
             }
             catch (Exception e)
             {
@@ -187,7 +231,7 @@ namespace ShutdownDiagnostic
         }
         #region Callbacks
 
-        public void RefreshView()
+        public void OnRefreshView()
         {
             _view.RenderGrid(_model);
         }
@@ -196,47 +240,146 @@ namespace ShutdownDiagnostic
         {
             MessageBox.Show(null, "Выключение сервера", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        #endregion
 
-        public bool AllVerified()
+        public void OnCheckServices()
         {
-            if (_isWatching)
+            _isWatching = true;
+            if (_model.VerificationList !=null && _model.VerificationList.Any())
             {
                 foreach (var server in _model.VerificationList)
                 {
-                    foreach (var statement in server.Statements)
+                    if (server.ServiceStatements !=null && server.ServiceStatements.Any())
                     {
-                        if (!statement.AllowBadQuality && statement.Quality != "GOOD")
+                        // impersonate if needs to
+                        if (server.User != null && server.Password != null && server.Domain != null)
                         {
-                            _view.IsShutdowActive = false;
-                            return false;
-                        };
-
-                        if (statement.Quality == "GOOD")
-                        {
-                            switch (statement.ParamType)
+                            if (!ImpersonationUtil.Impersonate(server.User, server.Password, server.Domain))
                             {
-                                case "bool":
+                                return;
+                            }
+                        }
+
+                        try
+                        {
+                            var servicesOnMachine = string.IsNullOrEmpty(server.HostName) ? ServiceController.GetServices() : ServiceController.GetServices(server.HostName);
+
+                            foreach (var serviceItem in server.ServiceStatements)
+                            {
+                                if (servicesOnMachine.Any(x => x.ServiceName.ToLower() == serviceItem.TagValue.ToLower()))
+                                {
+                                    ServiceController service = string.IsNullOrEmpty(server.HostName) ? new ServiceController(serviceItem.TagValue) : new ServiceController(serviceItem.TagValue, server.HostName);
+
+
+                                    switch(service.Status)
                                     {
-                                        try
-                                        {
-                                            var value = bool.Parse(statement.Value);
-                                            if (value != (bool)statement.VerifyIf)
-                                            {
-                                                _view.IsShutdowActive = false;
-                                                return false;
-                                            };
-                                        }
-                                        catch { }
-                                        break;
+                                        case ServiceControllerStatus.ContinuePending:
+                                            serviceItem.Value = "5";
+                                            break;
+                                        case ServiceControllerStatus.Paused:
+                                            serviceItem.Value = "7";
+                                            break;
+                                        case ServiceControllerStatus.PausePending:
+                                            serviceItem.Value = "6";
+                                            break;
+                                        case ServiceControllerStatus.Running:
+                                            serviceItem.Value = "4";
+                                            break;
+                                        case ServiceControllerStatus.StartPending:
+                                            serviceItem.Value = "2";
+                                            break;
+                                        case ServiceControllerStatus.StopPending:
+                                            serviceItem.Value = "3";
+                                            break;
+                                        case ServiceControllerStatus.Stopped:
+                                            serviceItem.Value = "1";
+                                            break;
+                                        default:
+                                            serviceItem.Value = "0";
+                                            break;
                                     }
+                                }
+                            }
+                        }
+                        catch (Exception e){
+                            var i = e.Message;
+                        } 
+                        finally
+                        {
+                            // undo impersonation 
+                            if (server.User != null && server.Password != null && server.Domain != null)
+                            {
+                                ImpersonationUtil.UnImpersonate();
                             }
                         }
                     }
                 }
             }
-            _view.IsShutdowActive = true;
-            return true;
+            VerifyAllStatements();
         }
+
+        public void OnCheckOpc()
+        {
+        }
+        #endregion
+
+        public void VerifyAllStatements()
+        {
+            if (_isWatching)
+            {
+                if (_model.VerificationList !=null && _model.VerificationList.Any())
+                {
+                    foreach (var server in _model.VerificationList)
+                    {
+                        if (server.ServiceStatements !=null && server.ServiceStatements.Any())
+                        {
+                            foreach (var service in server.ServiceStatements)
+                            {
+                                if ((string)service.VerifyIf == service.Value) service.IsVerified = true;
+                                else service.IsVerified = false;
+                            }
+                        }
+                    }
+                }
+                _view.IsShutdowActive = _model.VerificationList.Where(x => x.ServiceStatements.Any(y => !y.IsVerified)).Count() == 0;
+                OnRefreshView();
+
+
+
+                //foreach (var server in _model.VerificationList)
+                //{
+                //    foreach (var statement in server.OpcStatements)
+                //    {
+                //        if (!statement.AllowBadQuality && statement.Quality != "GOOD")
+                //        {
+                //            _view.IsShutdowActive = false;
+                //            return false;
+                //        };
+
+                //        if (statement.Quality == "GOOD")
+                //        {
+                //            switch (statement.ParamType)
+                //            {
+                //                case "bool":
+                //                    {
+                //                        try
+                //                        {
+                //                            var value = bool.Parse(statement.Value);
+                //                            if (value != (bool)statement.VerifyIf)
+                //                            {
+                //                                _view.IsShutdowActive = false;
+                //                                return false;
+                //                            };
+                //                        }
+                //                        catch { }
+                //                        break;
+                //                    }
+                //            }
+                //        }
+                //    }
+                //}
+            }
+        }
+
+        
     }
 }

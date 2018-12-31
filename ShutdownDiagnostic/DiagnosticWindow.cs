@@ -16,6 +16,11 @@ namespace ShutdownDiagnostic
 {
     public partial class DiagnosticWindow : Form, IDiagnosticView
     {
+        private Color _colorUndefined = Color.LightGray;
+        private Color _colorVerified = Color.LightGreen;
+        private Color _colorNotVerified = Color.Red;
+        private int _selectedRow;
+
         public bool IsShutdowActive { set => btnShutdown.Enabled = value; }
 
         public DiagnosticWindow()
@@ -28,16 +33,35 @@ namespace ShutdownDiagnostic
         {
             btnStartWatch.Click += (sender, e) =>
             {
+                timerServicesWatcher.Start();
+                timerRenderView.Start();
+
                 callback.OnStarWatch();
+            };
+            btnStopWatch.Click += (sender, e) =>
+            {
+                timerRenderView.Stop();
+                timerServicesWatcher.Stop();
+                callback.OnStopWatch();
             };
             btnShutdown.Click += (sender, e) =>
             {
                 callback.OnShutdown();
             };
             button1.Click += (sender, e) =>
-             {
-                 callback.SetAllTrue();
-             };
+            {
+                //callback.CheckServices();
+                timerServicesWatcher.Start();
+                timerRenderView.Start();
+            };
+            timerServicesWatcher.Tick += (sender, e) =>
+            {
+                callback.OnCheckServices();
+            };
+            timerRenderView.Tick += (sender, e) =>
+            {
+                callback.OnRefreshView();
+            };
         }
 
         private void RenderServerHeader(Server server, int row)
@@ -50,17 +74,41 @@ namespace ShutdownDiagnostic
             dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = color;
         }
 
-        private void RenderServerStatement(Statement statement, int row)
+        private void RenderServerServiceStatement(ServiceStatement statement, int row)
         {
-            var colorUndefined = Color.LightGray;
-            var colorVerified = Color.LightGreen;
-            var colorNotVerified = Color.Red;
+            dgDiagnostic.Rows.Add(statement.Caption, string.Empty, statement.Value);
+            if (string.IsNullOrEmpty(statement.Value))
+            {
+                dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorUndefined;
+                dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorUndefined;
+                dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorUndefined;
+            }
+            else
+            {
+                if (statement.IsVerified)
+                {
+                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorVerified;
+                }
+                else
+                {
+                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorNotVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorNotVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorNotVerified;
+                }
+            }
+
+        }
+
+        private void RenderServerOpcStatement(OpcStatement statement, int row)
+        {
             dgDiagnostic.Rows.Add(statement.Caption, statement.Quality, statement.Value);
             if (string.IsNullOrEmpty(statement.Value) && string.IsNullOrEmpty(statement.Quality))
             {
-                dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = colorUndefined;
-                dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = colorUndefined;
-                dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = colorUndefined;
+                dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorUndefined;
+                dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorUndefined;
+                dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorUndefined;
             }
             else if (statement.Quality == "GOOD")
             {
@@ -81,21 +129,26 @@ namespace ShutdownDiagnostic
 
                 if (isVerified)
                 {
-                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = colorVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = colorVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = colorVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorVerified;
                 }
                 else
                 {
-                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = colorNotVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = colorNotVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = colorNotVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorNotVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorNotVerified;
+                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorNotVerified;
                 }
             }
         }
 
         public void RenderGrid(IDiagnosticViewModel model)
         {
+            if (dgDiagnostic.CurrentCell !=null)
+            {
+                _selectedRow = dgDiagnostic.CurrentCell.RowIndex;
+            }
+
             if (model.VerificationList != null && model.VerificationList.Any())
             {
                 dgDiagnostic.Rows.Clear();
@@ -105,122 +158,49 @@ namespace ShutdownDiagnostic
                     RenderServerHeader(vServer, rowNum);
                     rowNum++;
 
-                    if (vServer.Statements != null && vServer.Statements.Any())
+                    if (vServer.ServiceStatements != null && vServer.ServiceStatements.Any())
                     {
-                        foreach (var statement in vServer.Statements)
+                        foreach (var statement in vServer.ServiceStatements)
                         {
-                            RenderServerStatement(statement, rowNum);
+                            RenderServerServiceStatement(statement, rowNum);
                             rowNum++;
                         }
                     }
-                    else
+
+                    if (vServer.OpcStatements != null && vServer.OpcStatements.Any())
                     {
-                        dgDiagnostic.Rows.Add("Параметры диагностики отсутствуют");
-                        dgDiagnostic.Rows[rowNum - 1].Cells[0].Style.ForeColor = Color.Red;
-                        rowNum++;
+                        foreach (var statement in vServer.OpcStatements)
+                        {
+                            RenderServerOpcStatement(statement, rowNum);
+                            rowNum++;
+                        }
                     }
-
-
-
                 }
             }
 
-            //if (lbMnaList.SelectedItem != null)
-            //{
-            //    Mna selectedMna = (Mna)lbMnaList.SelectedItem;
-            //    if (selectedMna != null)
-            //    {
-            //        dgParameters.Rows.Clear();
-            //        Int16 rowNum = 1;
-
-            //        if (selectedMna.TsSecurity != null && selectedMna.TsSecurity.Any())
-            //        {
-            //            dgParameters.Rows.Add(String.Empty, selectedMna.TsSecurityCaption);
-            //            dgParameters.Rows[rowNum - 1].Cells[1].Style.Font = new Font("Arial", 14, FontStyle.Bold);
-            //            foreach (Tag tag in selectedMna.TsSecurity)
-            //            {
-            //                dgParameters.Rows.Add(rowNum, string.Format(tag.Caption, MnaNumber), tag.Status);
-            //                if (tag.Status == Status.Ok) dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.Green;
-            //                else if (tag.Status == Status.NotFound) dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.Red;
-            //                else if (tag.Status == Status.NotSingleResult) dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.LightGreen;
-
-            //                if (string.IsNullOrEmpty(tag.Name))
-            //                {
-            //                    dgParameters.Rows[rowNum].Cells[0].Style.BackColor = Color.Silver;
-            //                    dgParameters.Rows[rowNum].Cells[1].Style.BackColor = Color.Silver;
-            //                    dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.Silver;
-            //                }
-            //                rowNum++;
-            //            }
-            //        }
-
-            //        if (selectedMna.TsOther != null && selectedMna.TsOther.Any())
-            //        {
-            //            dgParameters.Rows.Add();
-            //            rowNum++;
-            //            dgParameters.Rows.Add(String.Empty, selectedMna.TsOtherCaption);
-            //            dgParameters.Rows[rowNum].Cells[1].Style.Font = new Font("Arial", 14, FontStyle.Bold);
-            //            rowNum++;
-
-            //            foreach (Tag tag in selectedMna.TsOther)
-            //            {
-            //                dgParameters.Rows.Add(rowNum, string.Format(tag.Caption, MnaNumber), tag.Status);
-            //                if (tag.Status == Status.Ok) dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.Green;
-            //                else if (tag.Status == Status.NotFound) dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.Red;
-            //                else if (tag.Status == Status.NotSingleResult) dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.LightGreen;
-
-            //                if (string.IsNullOrEmpty(tag.Name))
-            //                {
-            //                    dgParameters.Rows[rowNum].Cells[0].Style.BackColor = Color.Silver;
-            //                    dgParameters.Rows[rowNum].Cells[1].Style.BackColor = Color.Silver;
-            //                    dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.Silver;
-            //                }
-
-            //                rowNum++;
-            //            }
-            //        }
-
-
-            //        if (selectedMna.Tu != null && selectedMna.Tu.Any())
-            //        {
-            //            dgParameters.Rows.Add();
-            //            rowNum++;
-            //            dgParameters.Rows.Add(String.Empty, selectedMna.TuCaption);
-            //            dgParameters.Rows[rowNum].Cells[1].Style.Font = new Font("Arial", 14, FontStyle.Bold);
-            //            rowNum++;
-
-            //            foreach (Tag tag in selectedMna.Tu)
-            //            {
-            //                dgParameters.Rows.Add(rowNum, string.Format(tag.Caption, MnaNumber), tag.Status);
-            //                if (tag.Status == Status.Ok) dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.Green;
-            //                else if (tag.Status == Status.NotFound) dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.Red;
-            //                else if (tag.Status == Status.NotSingleResult) dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.LightGreen;
-
-            //                if (string.IsNullOrEmpty(tag.Name))
-            //                {
-            //                    dgParameters.Rows[rowNum].Cells[0].Style.BackColor = Color.Silver;
-            //                    dgParameters.Rows[rowNum].Cells[1].Style.BackColor = Color.Silver;
-            //                    dgParameters.Rows[rowNum].Cells[2].Style.BackColor = Color.Silver;
-            //                }
-
-            //                rowNum++;
-            //            }
-            //        }
-
-            //    }
-            //}
+            if (dgDiagnostic.Rows.Count>0)
+            {
+                dgDiagnostic.Rows[_selectedRow].Selected = true;
+                dgDiagnostic.CurrentCell = dgDiagnostic.Rows[_selectedRow].Cells[0];
+            }
         }
 
         private void InitializeColumnsOfGrid()
         {
             dgDiagnostic.AutoGenerateColumns = false;
             dgDiagnostic.Columns.Add("Parameter", "Параметр");
-            dgDiagnostic.Columns.Add("Qualoty", "Качество");
+            dgDiagnostic.Columns.Add("Quality", "Качество*");
             dgDiagnostic.Columns.Add("Status", "Статус");
             foreach (DataGridViewColumn column in dgDiagnostic.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            dgDiagnostic.Rows[2].Selected = true;
+            dgDiagnostic.CurrentCell = dgDiagnostic.Rows[2].Cells[0];
         }
     }
 }

@@ -3,7 +3,11 @@
     public interface IDiagnosticPresenterCallback
     {
         void OnStarWatch();
+        void OnStopWatch();
         void OnShutdown();
-        void SetAllTrue();
+        void OnSetAllTrue();
+        void OnCheckServices();
+        void OnCheckOpc();
+        void OnRefreshView();
     }
 }
