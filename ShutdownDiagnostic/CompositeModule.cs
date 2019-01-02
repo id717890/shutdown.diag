@@ -16,6 +16,7 @@ namespace ShutdownDiagnostic
         {
             Bind<IDiagnosticPresenter>().To<DiagnosticPresenter>();
             Bind<IDiagnosticView>().To<DiagnosticWindow>();
+            Bind<IDiagnosticViewMinimize>().To<DiagnosticWindowMinimize>();
             Bind<IDiagnosticViewModel>().To<DiagnosticViewModel>();
         }
     }

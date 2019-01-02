@@ -4,10 +4,11 @@
     {
         void OnStarWatch();
         void OnStopWatch();
-        void OnShutdown();
-        void OnSetAllTrue();
+        void OnRunCmdCommand();
         void OnCheckServices();
         void OnCheckOpc();
         void OnRefreshView();
+        void OnShowMinimizeForm();
+        void OnShowNormalForm();
     }
 }

@@ -15,5 +15,11 @@ namespace ShutdownDiagnostic.Data
         public int Order { get; set; }
         public IEnumerable<OpcStatement> OpcStatements { get; set; }
         public IEnumerable<ServiceStatement> ServiceStatements { get; set; }
+
+        public Server()
+        {
+            OpcStatements = new List<OpcStatement>();
+            ServiceStatements = new List<ServiceStatement>();
+        }
     }
 }

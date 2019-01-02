@@ -3,13 +3,9 @@ using ShutdownDiagnostic.Interface.Model;
 using ShutdownDiagnostic.Interface.Presenter;
 using ShutdownDiagnostic.Interface.View;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ShutdownDiagnostic
@@ -21,7 +17,23 @@ namespace ShutdownDiagnostic
         private Color _colorNotVerified = Color.Red;
         private int _selectedRow;
 
-        public bool IsShutdowActive { set => btnShutdown.Enabled = value; }
+        public bool IsShutdowActive { set => btnRestartServer.Invoke(new EventHandler(delegate { btnRestartServer.Enabled = value; })); }
+        public bool IsShow
+        {
+            set
+            {
+                if (value == true)
+                {
+                    Show();
+                    WindowState = FormWindowState.Normal;
+                }
+                else Hide();
+            }
+            get
+            {
+                return Form.ActiveForm == this;
+            }
+        }
 
         public DiagnosticWindow()
         {
@@ -37,6 +49,8 @@ namespace ShutdownDiagnostic
                 timerRenderView.Start();
 
                 callback.OnStarWatch();
+                callback.OnCheckOpc();
+
             };
             btnStopWatch.Click += (sender, e) =>
             {
@@ -44,15 +58,9 @@ namespace ShutdownDiagnostic
                 timerServicesWatcher.Stop();
                 callback.OnStopWatch();
             };
-            btnShutdown.Click += (sender, e) =>
+            btnRestartServer.Click += (sender, e) =>
             {
-                callback.OnShutdown();
-            };
-            button1.Click += (sender, e) =>
-            {
-                //callback.CheckServices();
-                timerServicesWatcher.Start();
-                timerRenderView.Start();
+                callback.OnRunCmdCommand();
             };
             timerServicesWatcher.Tick += (sender, e) =>
             {
@@ -61,6 +69,22 @@ namespace ShutdownDiagnostic
             timerRenderView.Tick += (sender, e) =>
             {
                 callback.OnRefreshView();
+            };
+
+            Resize += (sender, e) =>
+            {
+                if (WindowState == FormWindowState.Minimized)
+                {
+                    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                    callback.OnShowMinimizeForm();
+                }
+                else if (WindowState == FormWindowState.Maximized)
+                {
+                    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                    dgDiagnostic.Columns[1].Width = 200;
+                    dgDiagnostic.Columns[2].Width = 200;
+
+                } else if (WindowState == FormWindowState.Normal) dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             };
         }
 
@@ -74,9 +98,10 @@ namespace ShutdownDiagnostic
             dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = color;
         }
 
-        private void RenderServerServiceStatement(ServiceStatement statement, int row)
+        private void RenderServerStatement(BaseStatement statement, int row)
         {
-            dgDiagnostic.Rows.Add(statement.Caption, string.Empty, statement.Value);
+            var statementItem = statement as OpcStatement;
+            dgDiagnostic.Rows.Add(statement.Caption, statement.Value, statementItem != null ? statementItem.Quality : string.Empty);
             if (string.IsNullOrEmpty(statement.Value))
             {
                 dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorUndefined;
@@ -101,50 +126,9 @@ namespace ShutdownDiagnostic
 
         }
 
-        private void RenderServerOpcStatement(OpcStatement statement, int row)
-        {
-            dgDiagnostic.Rows.Add(statement.Caption, statement.Quality, statement.Value);
-            if (string.IsNullOrEmpty(statement.Value) && string.IsNullOrEmpty(statement.Quality))
-            {
-                dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorUndefined;
-                dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorUndefined;
-                dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorUndefined;
-            }
-            else if (statement.Quality == "GOOD")
-            {
-                var isVerified = false;
-                switch (statement.ParamType)
-                {
-                    case "bool":
-                        {
-                            try
-                            {
-                                var value = bool.Parse(statement.Value);
-                                if (value == (bool)statement.VerifyIf) isVerified = true;
-                            }
-                            catch { }
-                            break;
-                        }
-                }
-
-                if (isVerified)
-                {
-                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorVerified;
-                }
-                else
-                {
-                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorNotVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorNotVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorNotVerified;
-                }
-            }
-        }
-
         public void RenderGrid(IDiagnosticViewModel model)
         {
-            if (dgDiagnostic.CurrentCell !=null)
+            if (dgDiagnostic.CurrentCell != null)
             {
                 _selectedRow = dgDiagnostic.CurrentCell.RowIndex;
             }
@@ -162,7 +146,7 @@ namespace ShutdownDiagnostic
                     {
                         foreach (var statement in vServer.ServiceStatements)
                         {
-                            RenderServerServiceStatement(statement, rowNum);
+                            RenderServerStatement(statement, rowNum);
                             rowNum++;
                         }
                     }
@@ -171,14 +155,14 @@ namespace ShutdownDiagnostic
                     {
                         foreach (var statement in vServer.OpcStatements)
                         {
-                            RenderServerOpcStatement(statement, rowNum);
+                            RenderServerStatement(statement, rowNum);
                             rowNum++;
                         }
                     }
                 }
             }
 
-            if (dgDiagnostic.Rows.Count>0)
+            if (dgDiagnostic.Rows.Count > 0)
             {
                 dgDiagnostic.Rows[_selectedRow].Selected = true;
                 dgDiagnostic.CurrentCell = dgDiagnostic.Rows[_selectedRow].Cells[0];
@@ -189,18 +173,17 @@ namespace ShutdownDiagnostic
         {
             dgDiagnostic.AutoGenerateColumns = false;
             dgDiagnostic.Columns.Add("Parameter", "Параметр");
-            dgDiagnostic.Columns.Add("Quality", "Качество*");
             dgDiagnostic.Columns.Add("Status", "Статус");
+            dgDiagnostic.Columns.Add("Quality", "Качество*");
             foreach (DataGridViewColumn column in dgDiagnostic.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        public void Exit()
         {
-            dgDiagnostic.Rows[2].Selected = true;
-            dgDiagnostic.CurrentCell = dgDiagnostic.Rows[2].Cells[0];
+            Close();
         }
     }
 }

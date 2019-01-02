@@ -10,7 +10,9 @@ namespace ShutdownDiagnostic.Interface.View
 {
     public interface IDiagnosticView : IView<IDiagnosticPresenterCallback>
     {
+        bool IsShow { get; set; }
         bool IsShutdowActive { set; }
+        void Exit();
         //Int32 ColumnCaption { get; set; }
         //Int32 ColumnTag { get; set; }
         //Int32 MnaNumber { get; set; }

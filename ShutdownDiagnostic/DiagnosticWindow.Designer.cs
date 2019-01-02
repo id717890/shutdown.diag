@@ -29,20 +29,17 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.dgDiagnostic = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button2 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.btnShutdown = new System.Windows.Forms.Button();
+            this.btnStopWatch = new System.Windows.Forms.Button();
+            this.btnRestartServer = new System.Windows.Forms.Button();
             this.btnStartWatch = new System.Windows.Forms.Button();
             this.timerServicesWatcher = new System.Windows.Forms.Timer(this.components);
             this.timerRenderView = new System.Windows.Forms.Timer(this.components);
-            this.btnStopWatch = new System.Windows.Forms.Button();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).BeginInit();
             this.panel1.SuspendLayout();
@@ -60,7 +57,7 @@
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 95F));
-            this.tlpMain.Size = new System.Drawing.Size(812, 478);
+            this.tlpMain.Size = new System.Drawing.Size(1014, 478);
             this.tlpMain.TabIndex = 0;
             // 
             // dgDiagnostic
@@ -74,88 +71,68 @@
             this.dgDiagnostic.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dgDiagnostic.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgDiagnostic.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgDiagnostic.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgDiagnostic.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dgDiagnostic.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgDiagnostic.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgDiagnostic.Location = new System.Drawing.Point(3, 3);
             this.dgDiagnostic.MultiSelect = false;
             this.dgDiagnostic.Name = "dgDiagnostic";
             this.dgDiagnostic.ReadOnly = true;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgDiagnostic.RowHeadersDefaultCellStyle = dataGridViewCellStyle8;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.dgDiagnostic.RowsDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgDiagnostic.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.dgDiagnostic.RowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dgDiagnostic.RowTemplate.Height = 30;
             this.dgDiagnostic.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgDiagnostic.Size = new System.Drawing.Size(806, 377);
+            this.dgDiagnostic.Size = new System.Drawing.Size(1008, 377);
             this.dgDiagnostic.TabIndex = 0;
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.btnStopWatch);
-            this.panel1.Controls.Add(this.button2);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.button1);
-            this.panel1.Controls.Add(this.btnShutdown);
+            this.panel1.Controls.Add(this.btnRestartServer);
             this.panel1.Controls.Add(this.btnStartWatch);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 386);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(806, 89);
+            this.panel1.Size = new System.Drawing.Size(1008, 89);
             this.panel1.TabIndex = 1;
             // 
-            // button2
+            // btnStopWatch
             // 
-            this.button2.Location = new System.Drawing.Point(377, 13);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnStopWatch.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnStopWatch.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnStopWatch.Location = new System.Drawing.Point(180, 0);
+            this.btnStopWatch.Name = "btnStopWatch";
+            this.btnStopWatch.Size = new System.Drawing.Size(180, 89);
+            this.btnStopWatch.TabIndex = 5;
+            this.btnStopWatch.Text = "Стоп наблюдения";
+            this.btnStopWatch.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // btnRestartServer
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(484, 30);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "label1";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(395, 42);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Set all true";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // btnShutdown
-            // 
-            this.btnShutdown.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnShutdown.Enabled = false;
-            this.btnShutdown.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnShutdown.Location = new System.Drawing.Point(626, 0);
-            this.btnShutdown.Name = "btnShutdown";
-            this.btnShutdown.Size = new System.Drawing.Size(180, 89);
-            this.btnShutdown.TabIndex = 1;
-            this.btnShutdown.Text = "Shutdown";
-            this.btnShutdown.UseVisualStyleBackColor = true;
+            this.btnRestartServer.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnRestartServer.Enabled = false;
+            this.btnRestartServer.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnRestartServer.Location = new System.Drawing.Point(828, 0);
+            this.btnRestartServer.Name = "btnRestartServer";
+            this.btnRestartServer.Size = new System.Drawing.Size(180, 89);
+            this.btnRestartServer.TabIndex = 1;
+            this.btnRestartServer.Text = "RESTART SERVER";
+            this.btnRestartServer.UseVisualStyleBackColor = true;
             // 
             // btnStartWatch
             // 
@@ -170,35 +147,23 @@
             // 
             // timerServicesWatcher
             // 
-            this.timerServicesWatcher.Interval = 3000;
+            this.timerServicesWatcher.Interval = 2000;
             // 
             // timerRenderView
             // 
             this.timerRenderView.Interval = 2000;
             // 
-            // btnStopWatch
-            // 
-            this.btnStopWatch.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnStopWatch.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnStopWatch.Location = new System.Drawing.Point(180, 0);
-            this.btnStopWatch.Name = "btnStopWatch";
-            this.btnStopWatch.Size = new System.Drawing.Size(180, 89);
-            this.btnStopWatch.TabIndex = 5;
-            this.btnStopWatch.Text = "Стоп наблюдения";
-            this.btnStopWatch.UseVisualStyleBackColor = true;
-            // 
             // DiagnosticWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(812, 478);
+            this.ClientSize = new System.Drawing.Size(1014, 478);
             this.Controls.Add(this.tlpMain);
             this.Name = "DiagnosticWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.tlpMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).EndInit();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -209,11 +174,8 @@
         private System.Windows.Forms.DataGridView dgDiagnostic;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnStartWatch;
-        private System.Windows.Forms.Button btnShutdown;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnRestartServer;
         private System.Windows.Forms.Timer timerServicesWatcher;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Timer timerRenderView;
         private System.Windows.Forms.Button btnStopWatch;
     }
