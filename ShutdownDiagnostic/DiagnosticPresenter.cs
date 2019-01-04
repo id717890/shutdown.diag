@@ -201,8 +201,8 @@ namespace ShutdownDiagnostic
             DisconnectOpcServers();
             SetModelNotVerified();
             _isWatching = false;
-            _view.IsShutdowActive = false;
-            _viewMinimize.IsShutdowActive = false;
+            if (_view.IsShow) _view.IsShutdowActive = false;
+            if (_viewMinimize.IsShow) _viewMinimize.IsShutdowActive = false;
         }
 
         private void SetModelNotVerified()

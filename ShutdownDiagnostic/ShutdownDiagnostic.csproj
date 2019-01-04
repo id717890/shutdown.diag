@@ -92,6 +92,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -121,6 +122,14 @@
     <Content Include="OPC libraries\OpcNetApi.Com.dll" />
     <Content Include="OPC libraries\OpcNetApi.dll" />
     <Content Include="OPC libraries\OpcNetApi.Xml.dll" />
+    <None Include="Resources\reset1_37.png" />
+    <None Include="Resources\stop1_38.png" />
+    <None Include="Resources\play1_38.png" />
+    <None Include="Resources\reset1_35.png" />
+    <None Include="Resources\stop1_32.png" />
+    <None Include="Resources\play1_32.png" />
+    <None Include="Resources\play1.png" />
+    <None Include="Resources\Play01.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

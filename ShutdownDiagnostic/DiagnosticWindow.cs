@@ -6,12 +6,26 @@ using System;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace ShutdownDiagnostic
 {
     public partial class DiagnosticWindow : Form, IDiagnosticView
     {
+        //[DllImport("user32.dll")]
+        //public extern static bool ShutdownBlockReasonCreate(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)] string pwszReason);
+
+        //private bool blocked = false;
+
+        //protected override void WndProc(ref Message aMessage)
+        //{
+        //    const int WM_QUERYENDSESSION = 0x0011;
+        //    const int WM_ENDSESSION = 0x0016;
+        //    if (blocked && (aMessage.Msg == WM_QUERYENDSESSION || aMessage.Msg == WM_ENDSESSION)) return;
+        //    base.WndProc(ref aMessage);
+        //}
+
         private Color _colorUndefined = Color.LightGray;
         private Color _colorVerified = Color.LightGreen;
         private Color _colorNotVerified = Color.Red;
@@ -184,6 +198,21 @@ namespace ShutdownDiagnostic
         public void Exit()
         {
             Close();
+        }
+
+        private void DiagnosticWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //if (ShutdownBlockReasonCreate(this.Handle, "DONT:"))
+            //{
+            //    blocked = true;
+            //    MessageBox.Show("Blocked");
+            //    e.Cancel = true;
+            //} else
+            //    MessageBox.Show("Block FAILED");
+            //if (e.CloseReason.Equals(CloseReason.WindowsShutDown)) {
+            //    MessageBox.Show("Prevet");
+            //    e.Cancel = true;
+            //}
         }
     }
 }

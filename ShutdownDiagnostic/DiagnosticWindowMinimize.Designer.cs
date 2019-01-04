@@ -36,9 +36,11 @@
             this.btnRestart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnRestart.Enabled = false;
             this.btnRestart.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnRestart.Image = global::ShutdownDiagnostic.Properties.Resources.reset1_37;
+            this.btnRestart.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRestart.Location = new System.Drawing.Point(0, 0);
             this.btnRestart.Name = "btnRestart";
-            this.btnRestart.Size = new System.Drawing.Size(397, 185);
+            this.btnRestart.Size = new System.Drawing.Size(294, 113);
             this.btnRestart.TabIndex = 0;
             this.btnRestart.Text = "RESTART SERVER";
             this.btnRestart.UseVisualStyleBackColor = true;
@@ -47,7 +49,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(397, 185);
+            this.ClientSize = new System.Drawing.Size(294, 113);
             this.Controls.Add(this.btnRestart);
             this.MinimizeBox = false;
             this.Name = "DiagnosticWindowMinimize";
