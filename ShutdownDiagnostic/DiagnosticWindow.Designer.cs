@@ -29,17 +29,17 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.dgDiagnostic = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnStopWatch = new System.Windows.Forms.Button();
+            this.btnRestartServer = new System.Windows.Forms.Button();
+            this.btnStartWatch = new System.Windows.Forms.Button();
             this.timerServicesWatcher = new System.Windows.Forms.Timer(this.components);
             this.timerRenderView = new System.Windows.Forms.Timer(this.components);
-            this.btnRestartServer = new System.Windows.Forms.Button();
-            this.btnStopWatch = new System.Windows.Forms.Button();
-            this.btnStartWatch = new System.Windows.Forms.Button();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).BeginInit();
             this.panel1.SuspendLayout();
@@ -71,30 +71,30 @@
             this.dgDiagnostic.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dgDiagnostic.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgDiagnostic.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgDiagnostic.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgDiagnostic.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgDiagnostic.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgDiagnostic.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgDiagnostic.Location = new System.Drawing.Point(3, 3);
             this.dgDiagnostic.MultiSelect = false;
             this.dgDiagnostic.Name = "dgDiagnostic";
             this.dgDiagnostic.ReadOnly = true;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgDiagnostic.RowHeadersDefaultCellStyle = dataGridViewCellStyle8;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.dgDiagnostic.RowsDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgDiagnostic.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.dgDiagnostic.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgDiagnostic.RowTemplate.Height = 27;
             this.dgDiagnostic.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgDiagnostic.Size = new System.Drawing.Size(1008, 377);
@@ -111,30 +111,6 @@
             this.panel1.Size = new System.Drawing.Size(1008, 89);
             this.panel1.TabIndex = 1;
             // 
-            // timerServicesWatcher
-            // 
-            this.timerServicesWatcher.Interval = 2000;
-            // 
-            // timerRenderView
-            // 
-            this.timerRenderView.Interval = 2000;
-            // 
-            // btnRestartServer
-            // 
-            this.btnRestartServer.BackColor = System.Drawing.SystemColors.Control;
-            this.btnRestartServer.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnRestartServer.Enabled = false;
-            this.btnRestartServer.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnRestartServer.Image = global::ShutdownDiagnostic.Properties.Resources.reset1_37;
-            this.btnRestartServer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRestartServer.Location = new System.Drawing.Point(828, 0);
-            this.btnRestartServer.Name = "btnRestartServer";
-            this.btnRestartServer.Size = new System.Drawing.Size(180, 89);
-            this.btnRestartServer.TabIndex = 1;
-            this.btnRestartServer.Text = "RESTART SERVER";
-            this.btnRestartServer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnRestartServer.UseVisualStyleBackColor = false;
-            // 
             // btnStopWatch
             // 
             this.btnStopWatch.BackColor = System.Drawing.SystemColors.Control;
@@ -149,6 +125,22 @@
             this.btnStopWatch.Text = "Стоп наблюдения";
             this.btnStopWatch.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnStopWatch.UseVisualStyleBackColor = false;
+            // 
+            // btnRestartServer
+            // 
+            this.btnRestartServer.BackColor = System.Drawing.SystemColors.Control;
+            this.btnRestartServer.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnRestartServer.Enabled = false;
+            this.btnRestartServer.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnRestartServer.Image = global::ShutdownDiagnostic.Properties.Resources.reset1_37;
+            this.btnRestartServer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnRestartServer.Location = new System.Drawing.Point(808, 0);
+            this.btnRestartServer.Name = "btnRestartServer";
+            this.btnRestartServer.Size = new System.Drawing.Size(200, 89);
+            this.btnRestartServer.TabIndex = 1;
+            this.btnRestartServer.Text = "RESTART SERVER";
+            this.btnRestartServer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnRestartServer.UseVisualStyleBackColor = false;
             // 
             // btnStartWatch
             // 
@@ -165,6 +157,14 @@
             this.btnStartWatch.Text = "Старт наблюдения";
             this.btnStartWatch.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnStartWatch.UseVisualStyleBackColor = false;
+            // 
+            // timerServicesWatcher
+            // 
+            this.timerServicesWatcher.Interval = 2000;
+            // 
+            // timerRenderView
+            // 
+            this.timerRenderView.Interval = 2000;
             // 
             // DiagnosticWindow
             // 
