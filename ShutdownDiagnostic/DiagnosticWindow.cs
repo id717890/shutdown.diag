@@ -112,10 +112,27 @@ namespace ShutdownDiagnostic
             dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = color;
         }
 
+        private string GetServiceState(string numberState)
+        {
+            switch (numberState)
+            {
+                case "-1": return "Неизвестно";
+                case "1": return "Остановлена";
+                case "2": return "Запускается";
+                case "3": return "Останавливается";
+                case "4": return "Работает";
+                case "5": return "Continue Pending";
+                case "6": return "Pause Pending";
+                case "7": return "Приостановлена";
+                default: return "Не определено";
+            }
+
+        }
+
         private void RenderServerStatement(BaseStatement statement, int row)
         {
             var statementItem = statement as OpcStatement;
-            dgDiagnostic.Rows.Add(statement.Caption, statement.Value, statementItem != null ? statementItem.Quality : string.Empty);
+            dgDiagnostic.Rows.Add(statement.Caption, statementItem !=null ? statementItem.Value : GetServiceState(statement.Value), statementItem != null ? statementItem.Quality : string.Empty);
             if (string.IsNullOrEmpty(statement.Value))
             {
                 dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorUndefined;

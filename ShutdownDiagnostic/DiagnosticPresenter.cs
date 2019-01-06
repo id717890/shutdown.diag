@@ -306,7 +306,7 @@ namespace ShutdownDiagnostic
                                             serviceItem.Value = "1";
                                             break;
                                         default:
-                                            serviceItem.Value = "0";
+                                            serviceItem.Value = "-1";
                                             break;
                                     }
                                 }

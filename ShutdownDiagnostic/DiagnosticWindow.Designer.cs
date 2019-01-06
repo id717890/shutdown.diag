@@ -57,7 +57,7 @@
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 95F));
-            this.tlpMain.Size = new System.Drawing.Size(1014, 478);
+            this.tlpMain.Size = new System.Drawing.Size(1014, 630);
             this.tlpMain.TabIndex = 0;
             // 
             // dgDiagnostic
@@ -97,7 +97,7 @@
             this.dgDiagnostic.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgDiagnostic.RowTemplate.Height = 27;
             this.dgDiagnostic.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgDiagnostic.Size = new System.Drawing.Size(1008, 377);
+            this.dgDiagnostic.Size = new System.Drawing.Size(1008, 529);
             this.dgDiagnostic.TabIndex = 0;
             // 
             // panel1
@@ -106,7 +106,7 @@
             this.panel1.Controls.Add(this.btnRestartServer);
             this.panel1.Controls.Add(this.btnStartWatch);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 386);
+            this.panel1.Location = new System.Drawing.Point(3, 538);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1008, 89);
             this.panel1.TabIndex = 1;
@@ -170,7 +170,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1014, 478);
+            this.ClientSize = new System.Drawing.Size(1014, 630);
             this.Controls.Add(this.tlpMain);
             this.Name = "DiagnosticWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
