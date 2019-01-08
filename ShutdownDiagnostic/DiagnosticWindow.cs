@@ -3,6 +3,7 @@ using ShutdownDiagnostic.Interface.Model;
 using ShutdownDiagnostic.Interface.Presenter;
 using ShutdownDiagnostic.Interface.View;
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -82,23 +83,23 @@ namespace ShutdownDiagnostic
             };
             timerRenderView.Tick += (sender, e) =>
             {
-                callback.OnRefreshView();
+                //callback.OnRefreshView();
             };
 
             Resize += (sender, e) =>
             {
-                if (WindowState == FormWindowState.Minimized)
-                {
-                    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                    callback.OnShowMinimizeForm();
-                }
-                else if (WindowState == FormWindowState.Maximized)
-                {
-                    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                    dgDiagnostic.Columns[1].Width = 200;
-                    dgDiagnostic.Columns[2].Width = 200;
+                //if (WindowState == FormWindowState.Minimized)
+                //{
+                //    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                //    callback.OnShowMinimizeForm();
+                //}
+                //else if (WindowState == FormWindowState.Maximized)
+                //{
+                //    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                //    dgDiagnostic.Columns[1].Width = 200;
+                //    dgDiagnostic.Columns[2].Width = 200;
 
-                } else if (WindowState == FormWindowState.Normal) dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                //} else if (WindowState == FormWindowState.Normal) dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             };
         }
 
@@ -157,59 +158,155 @@ namespace ShutdownDiagnostic
 
         }
 
+        private class TestData: INotifyPropertyChanged
+        {
+            public string Server { get; set; }
+            public string Caption { get; set; }
+
+            string status;
+            public string Status { get { return status; } set { status = value; NotifyChanged("Status"); } }
+
+            string quality;
+            public string Quality { get { return quality; } set { quality = value; NotifyChanged("Quality"); } }
+
+            void NotifyChanged(string prop)
+            {
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
+            public event PropertyChangedEventHandler PropertyChanged;
+        }
+
         public void RenderGrid(IDiagnosticViewModel model)
         {
-            if (dgDiagnostic.CurrentCell != null)
-            {
-                _selectedRow = dgDiagnostic.CurrentCell.RowIndex;
-            }
+            var list = model.GridDataList;
 
-            if (model.VerificationList != null && model.VerificationList.Any())
-            {
-                dgDiagnostic.Rows.Clear();
-                var rowNum = 1;
-                foreach (var vServer in model.VerificationList.OrderBy(x => x.Order))
-                {
-                    RenderServerHeader(vServer, rowNum);
-                    rowNum++;
+            //if (model.VerificationList != null && model.VerificationList.Any())
+            //{
+            //    foreach (var vServer in model.VerificationList.OrderBy(x => x.Order))
+            //    {
+            //        if (vServer.ServiceStatements != null && vServer.ServiceStatements.Any())
+            //        {
+            //            foreach (var statement in vServer.ServiceStatements)
+            //            {
+            //                list.Add(new TestData
+            //                {
+            //                    Server = vServer.Caption,
+            //                    Caption = statement.Caption,
+            //                    Status = statement.Value
+            //                });
+            //            }
+            //        }
 
-                    if (vServer.ServiceStatements != null && vServer.ServiceStatements.Any())
-                    {
-                        foreach (var statement in vServer.ServiceStatements)
-                        {
-                            RenderServerStatement(statement, rowNum);
-                            rowNum++;
-                        }
-                    }
+            //        if (vServer.OpcStatements != null && vServer.OpcStatements.Any())
+            //        {
+            //            foreach (var statement in vServer.OpcStatements)
+            //            {
+            //                list.Add(new TestData
+            //                {
+            //                    Server = vServer.Caption,
+            //                    Caption = statement.Caption,
+            //                    Status = statement.Value,
+            //                    Quality = statement.Quality
+            //                });
+            //            }
+            //        }
+            //    }
+            //}
 
-                    if (vServer.OpcStatements != null && vServer.OpcStatements.Any())
-                    {
-                        foreach (var statement in vServer.OpcStatements)
-                        {
-                            RenderServerStatement(statement, rowNum);
-                            rowNum++;
-                        }
-                    }
-                }
-            }
+            dgDiagnostic.DataSource = list;
+            var grouper = new Subro.Controls.DataGridViewGrouper(dgDiagnostic);
+            grouper.SetGroupOn<GridData>(t => t.ServerCaption);
+            grouper.Options.ShowGroupName = false;
 
-            if (dgDiagnostic.Rows.Count > 0)
-            {
-                dgDiagnostic.Rows[_selectedRow].Selected = true;
-                dgDiagnostic.CurrentCell = dgDiagnostic.Rows[_selectedRow].Cells[0];
-            }
+            //grouper.SetGroupOn("TypeProperty");
+
+
+            //if (dgDiagnostic.CurrentCell != null)
+            //{
+            //    _selectedRow = dgDiagnostic.CurrentCell.RowIndex;
+            //}
+
+            //if (model.VerificationList != null && model.VerificationList.Any())
+            //{
+            //    dgDiagnostic.Rows.Clear();
+            //    var rowNum = 1;
+            //    foreach (var vServer in model.VerificationList.OrderBy(x => x.Order))
+            //    {
+            //        //RenderServerHeader(vServer, rowNum);
+            //        //rowNum++;
+
+            //        if (vServer.ServiceStatements != null && vServer.ServiceStatements.Any())
+            //        {
+            //            foreach (var statement in vServer.ServiceStatements)
+            //            {
+            //                RenderServerStatement(statement, rowNum);
+            //                rowNum++;
+            //            }
+            //        }
+
+            //        if (vServer.OpcStatements != null && vServer.OpcStatements.Any())
+            //        {
+            //            foreach (var statement in vServer.OpcStatements)
+            //            {
+            //                RenderServerStatement(statement, rowNum);
+            //                rowNum++;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //if (dgDiagnostic.Rows.Count > 0)
+            //{
+            //    dgDiagnostic.Rows[_selectedRow].Selected = true;
+            //    dgDiagnostic.CurrentCell = dgDiagnostic.Rows[_selectedRow].Cells[0];
+            //}
         }
 
         private void InitializeColumnsOfGrid()
         {
             dgDiagnostic.AutoGenerateColumns = false;
-            dgDiagnostic.Columns.Add("Parameter", "Параметр");
-            dgDiagnostic.Columns.Add("Status", "Статус");
-            dgDiagnostic.Columns.Add("Quality", "Качество*");
-            foreach (DataGridViewColumn column in dgDiagnostic.Columns)
-            {
-                column.SortMode = DataGridViewColumnSortMode.NotSortable;
-            }
+
+            //dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn
+            //{
+            //    DataPropertyName = "ServerId"
+            //});
+            dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "ServerCaption", Name = "ServerCaption", HeaderText = "Сервер" });
+            dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "StatementCaption", Name = "StatementCaption", HeaderText = "Параметр" });
+            dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Value", Name = "Value", HeaderText = "Статус" });
+            dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Quality", Name = "Quality", HeaderText = "Качество" });
+
+
+            //dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn
+            //{
+            //    DataPropertyName = "StatementId"
+            //});
+            //dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn
+            //{
+            //    DataPropertyName = "Value"
+            //});
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
+            //dgDiagnostic.Columns.Add("Parameter", "Параметр");
+            //dgDiagnostic.Columns.Add("Status", "Статус");
+            //dgDiagnostic.Columns.Add("Quality", "Качество*");
+            //foreach (DataGridViewColumn column in dgDiagnostic.Columns)
+            //{
+            //    column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            //}
         }
 
         public void Exit()

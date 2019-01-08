@@ -6,6 +6,7 @@ namespace ShutdownDiagnostic
 {
     public class DiagnosticViewModel : IDiagnosticViewModel
     {
-        public IEnumerable<Server> VerificationList { get; set; }
+        //public IEnumerable<Server> VerificationList { get; set; }
+        public IEnumerable<GridData> GridDataList { get; set; }
     }
 }

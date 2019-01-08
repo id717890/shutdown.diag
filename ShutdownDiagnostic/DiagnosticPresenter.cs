@@ -51,7 +51,8 @@ namespace ShutdownDiagnostic
         {
             try
             {
-                List<Server> model = new List<Server>();
+                //List<Server> model = new List<Server>();
+                List<GridData> modelGrid = new List<GridData>();
                 if (Directory.Exists(Configs.AppFolder + "\\configs"))
                 {
                     if (File.Exists(Configs.AppFolder + "\\configs\\" + Configs.ConfigFileName))
@@ -92,7 +93,7 @@ namespace ShutdownDiagnostic
                                             var tagsList = server.Elements("tag");
                                             if (tagsList != null && tagsList.Any())
                                             {
-                                                var tagListItems = new List<OpcStatement>();
+                                                //var tagListItems = new List<OpcStatement>();
                                                 foreach (var statement in tagsList)
                                                 {
                                                     var statementCaption = statement.Attribute("caption");
@@ -107,7 +108,6 @@ namespace ShutdownDiagnostic
                                                         {
                                                             Caption = statementCaption.Value,
                                                             TagValue = statementTag,
-
                                                             Id = Guid.NewGuid()
                                                         };
                                                         if (allowQualityBad != null)
@@ -139,10 +139,30 @@ namespace ShutdownDiagnostic
                                                                     break;
                                                                 }
                                                         }
-                                                        tagListItems.Add(statementItem);
+
+                                                        modelGrid.Add(new GridData
+                                                        {
+                                                            ServerId = serverItem.Id,
+                                                            Connectionstring = serverItem.Connectionstring,
+                                                            ServerCaption = serverItem.Caption,
+                                                            HostName = serverItem.HostName,
+                                                            User = serverItem.User,
+                                                            Password = serverItem.Password,
+                                                            Domain = serverItem.Domain,
+                                                            Order = serverItem.Order,
+
+                                                            StatementId = statementItem.Id,
+                                                            AllowBadQuality = statementItem.AllowBadQuality,
+                                                            IsVerified = statementItem.IsVerified,
+                                                            ParamType = statementItem.ParamType,
+                                                            StatementCaption = statementItem.Caption,
+                                                            TagValue = statementItem.TagValue,
+                                                            VerifyIf = statementItem.VerifyIf,
+                                                            Quality = statementItem.Quality,
+                                                            ParameterStatement = ParameterStatement.OpcTag
+                                                        });
                                                     }
                                                 }
-                                                serverItem.OpcStatements = tagListItems;
                                             }
                                             #endregion
 
@@ -166,13 +186,30 @@ namespace ShutdownDiagnostic
                                                             VerifyIf = serviceVerifyIf.Value,
                                                             TagValue = serviceName
                                                         };
-                                                        serviceListItems.Add(serviceItem);
+                                                        modelGrid.Add(new GridData
+                                                        {
+                                                            ServerId = serverItem.Id,
+                                                            Connectionstring = serverItem.Connectionstring,
+                                                            ServerCaption = serverItem.Caption,
+                                                            HostName = serverItem.HostName,
+                                                            User = serverItem.User,
+                                                            Password = serverItem.Password,
+                                                            Domain = serverItem.Domain,
+                                                            Order = serverItem.Order,
+
+                                                            StatementId = serverItem.Id,
+                                                            IsVerified = serviceItem.IsVerified,
+                                                            StatementCaption = serviceItem.Caption,
+                                                            TagValue = serviceItem.TagValue,
+                                                            VerifyIf = serviceItem.VerifyIf,
+                                                            ParameterStatement = ParameterStatement.Service
+                                                        });
                                                     }
                                                 }
                                                 serverItem.ServiceStatements = serviceListItems;
                                             }
                                             #endregion
-                                            model.Add(serverItem);
+                                            //model.Add(serverItem);
                                         }
                                     }
                                 }
@@ -185,14 +222,13 @@ namespace ShutdownDiagnostic
                     else MessageBox.Show(string.Format("Файл конфигурации '{0}' не обнаружена в дериктории configs", Configs.ConfigFileName), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else MessageBox.Show("Папка 'configs' не обнаружена в текущей дериктории", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _model.VerificationList = model;
+                _model.GridDataList = modelGrid;
                 OnRefreshView();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
         #region Callbacks
 
@@ -207,25 +243,30 @@ namespace ShutdownDiagnostic
 
         private void SetModelNotVerified()
         {
-            if (_model != null && _model.VerificationList != null)
+            if (_model != null && _model.GridDataList != null)
             {
-                foreach (var server in _model.VerificationList)
+                foreach(var service in _model.GridDataList.Where(x=>x.ParameterStatement == ParameterStatement.Service))
                 {
-                    if (server.ServiceStatements != null && server.ServiceStatements.Any())
-                        foreach (var service in server.ServiceStatements)
-                        {
-                            service.Value = string.Empty;
-                            service.IsVerified = false;
-                        }
-                    if (server.OpcStatements != null && server.OpcStatements.Any())
-                        foreach (var service in server.OpcStatements)
-                        {
-                            service.Quality = string.Empty;
-                            service.Value = string.Empty;
-                            service.IsVerified = false;
-                        }
+                    service.Value = "-1";
+                    service.IsVerified = false;
                 }
-                OnRefreshView();
+                //foreach (var server in _model.VerificationList)
+                //{
+                //    if (server.ServiceStatements != null && server.ServiceStatements.Any())
+                //        foreach (var service in server.ServiceStatements)
+                //        {
+                //            service.Value = string.Empty;
+                //            service.IsVerified = false;
+                //        }
+                //    if (server.OpcStatements != null && server.OpcStatements.Any())
+                //        foreach (var service in server.OpcStatements)
+                //        {
+                //            service.Quality = string.Empty;
+                //            service.Value = string.Empty;
+                //            service.IsVerified = false;
+                //        }
+                //}
+                //OnRefreshView();
             }
         }
 
@@ -256,26 +297,37 @@ namespace ShutdownDiagnostic
         public void OnCheckServices()
         {
             _isWatching = true;
-            if (_model.VerificationList != null && _model.VerificationList.Any())
+            var servers = _model.GridDataList.Where(x => x.ParameterStatement == ParameterStatement.Service).Select(x => new
             {
-                foreach (var server in _model.VerificationList)
+                x.ServerId,
+                x.StatementCaption,
+                x.Connectionstring,
+                x.HostName,
+                x.Domain,
+                x.User,
+                x.Password,
+                x.Order
+            }).Distinct();
+            if (servers != null && servers.Any())
+            {
+                foreach (var server in servers)
                 {
-                    if (server.ServiceStatements != null && server.ServiceStatements.Any())
+                    // impersonate if needs to
+                    if (server.User != null && server.Password != null && server.Domain != null)
                     {
-                        // impersonate if needs to
-                        if (server.User != null && server.Password != null && server.Domain != null)
+                        if (!ImpersonationUtil.Impersonate(server.User, server.Password, server.Domain))
                         {
-                            if (!ImpersonationUtil.Impersonate(server.User, server.Password, server.Domain))
-                            {
-                                return;
-                            }
+                            return;
                         }
+                    }
 
-                        try
+                    try
+                    {
+                        var servicesOnMachine = string.IsNullOrEmpty(server.HostName) ? ServiceController.GetServices() : ServiceController.GetServices(server.HostName);
+                        var services = _model.GridDataList.Where(x => x.ServerId == server.ServerId && x.ParameterStatement == ParameterStatement.Service);
+                        if (services != null && services.Any())
                         {
-                            var servicesOnMachine = string.IsNullOrEmpty(server.HostName) ? ServiceController.GetServices() : ServiceController.GetServices(server.HostName);
-
-                            foreach (var serviceItem in server.ServiceStatements)
+                            foreach (var serviceItem in services)
                             {
                                 if (servicesOnMachine.Any(x => x.ServiceName.ToLower() == serviceItem.TagValue.ToLower()))
                                 {
@@ -312,17 +364,14 @@ namespace ShutdownDiagnostic
                                 }
                             }
                         }
-                        catch (Exception e)
+                    }
+                    catch { }
+                    finally
+                    {
+                        // undo impersonation 
+                        if (server.User != null && server.Password != null && server.Domain != null)
                         {
-                            var i = e.Message;
-                        }
-                        finally
-                        {
-                            // undo impersonation 
-                            if (server.User != null && server.Password != null && server.Domain != null)
-                            {
-                                ImpersonationUtil.UnImpersonate();
-                            }
+                            ImpersonationUtil.UnImpersonate();
                         }
                     }
                 }
@@ -338,126 +387,93 @@ namespace ShutdownDiagnostic
 
         void TagValue_DataChanged(object subscriptionHandle, object requestHandle, Opc.Da.ItemValueResult[] values)
         {
-            for (int i = 0; i < values.Length; i++)
-            {
-                var server = _model.VerificationList.SingleOrDefault(x => x.Id == (Guid)values[i].ClientHandle);
-                if (server != null)
-                {
-                    var tag = server.OpcStatements.SingleOrDefault(x => x.TagValue == values[i].ItemName);
-                    if (tag != null)
-                    {
-                        tag.Value = values[i].Value.ToString();
-                        tag.Quality = values[i].Quality.ToString();
-                    }
-                }
-                //var receivedData = values[i].Value;
-                //if (values[i].ItemName == "AK.SIBNP.R_Uraj.NPS_Berez2.DPS_1.Scr.Scr1")
-                //{
-                //label3.Text = values[i].Value.ToString();
-                //label4.Text = values[i].Quality.ToString();
-                //label3.Invoke(new EventHandler(delegate { label3.Text = values[i].Value.ToString(); }));
-                //label4.Invoke(new EventHandler(delegate { label4.Text = values[i].Quality.ToString(); }));
-
-                //    myOpcObject.DataN7 = receivedData;
-                //    //remember that it's in another thread (so if you want to update the UI you should use anonyms methods)
-                //lblN7Read.Invoke(new EventHandler(delegate { lblN7Read.Text = myOpcObject.DataN7[0].ToString(); }));
-                //    label1.Invoke(new EventHandler(delegate { label1.Text = myOpcObject.DataN7[1].ToString(); }));
-                //}
-                //else if (values[i].ItemName == "[UNTITLED_1]N11:0,L10")
-                //{
-                //    myOpcObject.DataN11 = receivedData;
-                //    label2.Invoke(new EventHandler(delegate { label2.Text = myOpcObject.DataN11[3].ToString(); }));
-                //}
-                //else if (values[i].ItemName == "[UNTITLED_1]B3:0,L2")
-                //{
-                //    myOpcObject.BitsB3 = receivedData;
-                //}
-                //else if (values[i].ItemName == "[UNTITLED_1]B10:0")
-                //{
-                //    myOpcObject.BitsB10 = receivedData;
-                //}
-            }
+            //for (int i = 0; i < values.Length; i++)
+            //{
+            //        var tagGrid = _model.GridDataList.SingleOrDefault(x => x.Server.Id == (Guid)values[i].ClientHandle && x.TagValue  == values[i].ItemName);
+            //        if (tagGrid != null)
+            //        {
+            //            tagGrid.Value = values[i].Value.ToString();
+            //            tagGrid.Quality = values[i].Quality.ToString();
+            //        }
+            //}
             VerifyAllStatements();
         }
 
         public void OnCheckOpc()
         {
-            if (_model.VerificationList != null && _model.VerificationList.Any())
-            {
-                _opcServers = new Dictionary<Guid, Opc.Da.Server>();
-                foreach (var server in _model.VerificationList.Where(x => !string.IsNullOrEmpty(x.Connectionstring)))
-                {
+            //if (_model.GridDataList != null && _model.GridDataList.Any())
+            //{
+            //    _opcServers = new Dictionary<Guid, Opc.Da.Server>();
+            //    foreach (var itemDataGrid in _model.GridDataList.Where(x => !string.IsNullOrEmpty(x.Server.Connectionstring)))
+            //    {
+            //        // 1st: Create a server object and connect to the RSLinx OPC Server
+            //        //var url = new Opc.URL("opcda://10.85.5.111/Infinity.OPCServer");
+            //        var url = new Opc.URL(itemDataGrid.Server.Connectionstring);
+            //        var fact = new OpcCom.Factory();
+            //        var opcServer = new Opc.Da.Server(fact, null);
+
+            //        //2nd: Connect to the created server
+
+            //        try
+            //        {
+            //            try
+            //            {
+            //                opcServer.Connect(url, new Opc.ConnectData(new System.Net.NetworkCredential()));
+            //            }
+            //            catch
+            //            {
+            //                MessageBox.Show("Сервер " + url + " недостпуен.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //            }
+            //            var id = itemDataGrid.Server.Id;
+            //            _opcServers.Add(id, opcServer);
+            //            if (itemDataGrid.OpcStatements != null && itemDataGrid.OpcStatements.Any())
+            //            {
 
 
-
-                    // 1st: Create a server object and connect to the RSLinx OPC Server
-                    //var url = new Opc.URL("opcda://10.85.5.111/Infinity.OPCServer");
-                    var url = new Opc.URL(server.Connectionstring);
-                    var fact = new OpcCom.Factory();
-                    var opcServer = new Opc.Da.Server(fact, null);
-
-                    //2nd: Connect to the created server
-
-                    try
-                    {
-                        try
-                        {
-                            opcServer.Connect(url, new Opc.ConnectData(new System.Net.NetworkCredential()));
-                        }
-                        catch
-                        {
-                            MessageBox.Show("Сервер " + url + " недостпуен.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
-                        var id = server.Id;
-                        _opcServers.Add(id, opcServer);
-                        if (server.OpcStatements != null && server.OpcStatements.Any())
-                        {
+            //                //3rd Create a group if items            
+            //                var groupState = new Opc.Da.SubscriptionState();
+            //                groupState.Name = "Group of " + itemDataGrid.Caption;
+            //                groupState.UpdateRate = 1000;// this isthe time between every reads from OPC server
+            //                groupState.Active = true;//this must be true if you the group has to read value
+            //                var groupRead = (Opc.Da.Subscription)opcServer.CreateSubscription(groupState);
+            //                groupRead.DataChanged += new Opc.Da.DataChangedEventHandler(TagValue_DataChanged);//callback when the data are readed
+            //                var items = new List<Opc.Da.Item>();
 
 
-                            //3rd Create a group if items            
-                            var groupState = new Opc.Da.SubscriptionState();
-                            groupState.Name = "Group of " + server.Caption;
-                            groupState.UpdateRate = 1000;// this isthe time between every reads from OPC server
-                            groupState.Active = true;//this must be true if you the group has to read value
-                            var groupRead = (Opc.Da.Subscription)opcServer.CreateSubscription(groupState);
-                            groupRead.DataChanged += new Opc.Da.DataChangedEventHandler(TagValue_DataChanged);//callback when the data are readed
-                            var items = new List<Opc.Da.Item>();
+            //                foreach (var tag in itemDataGrid.OpcStatements)
+            //                {
+            //                    items.Add(new Opc.Da.Item
+            //                    {
+            //                        ItemName = tag.TagValue,
+            //                        ClientHandle = id
+            //                    });
+            //                }
 
+            //                //// add items to the group    (in Rockwell names are identified like [Name of PLC in the server]Block of word:number of word,number of consecutive readed words)        
 
-                            foreach (var tag in server.OpcStatements)
-                            {
-                                items.Add(new Opc.Da.Item
-                                {
-                                    ItemName = tag.TagValue,
-                                    ClientHandle = id
-                                });
-                            }
+            //                ////items[0] = new Opc.Da.Item();
+            //                ////items[0].ItemName = "NPS_Berez2.DPS_1.Scr.Scr1";//this reads 2 word (short - 16 bit)
+            //                ////items[1] = new Opc.Da.Item();
+            //                ////items[1].ItemName = "SIKN_592.BIK.Vmom";//this reads an array of 10 words (short[])
+            //                //items[0] = new Opc.Da.Item();
+            //                //items[0].ItemName = "AK.SIBNP.R_Uraj.NPS_Berez2.DPS_1.Scr.Scr1";//this reads 2 word (short - 16 bit)
+            //                //items[0].ClientHandle = Guid.NewGuid();
+            //                ////items[1] = new Opc.Da.Item();
+            //                ////items[1].ItemName = "AK.SIBNP.R_Uraj.SERVICE.WebRouter_AK.SIBNP.R_Uraj.StatusInt.Cause";//this reads an array of 10 words (short[])
+            //                ////items[2] = new Opc.Da.Item();
+            //                ////items[2].ItemName = "AK.SIBNP.R_Uraj.Offline_14";//this read a 2 word array (but in the plc the are used as bits so you have to mask them)    
+            //                ////items[3] = new Opc.Da.Item();
+            //                ////items[3].ItemName = "AK.SIBNP.R_Uraj.Test_14";//this read a 2 word array (but in the plc the are used as bits so you have to mask them)    
 
-                            //// add items to the group    (in Rockwell names are identified like [Name of PLC in the server]Block of word:number of word,number of consecutive readed words)        
-
-                            ////items[0] = new Opc.Da.Item();
-                            ////items[0].ItemName = "NPS_Berez2.DPS_1.Scr.Scr1";//this reads 2 word (short - 16 bit)
-                            ////items[1] = new Opc.Da.Item();
-                            ////items[1].ItemName = "SIKN_592.BIK.Vmom";//this reads an array of 10 words (short[])
-                            //items[0] = new Opc.Da.Item();
-                            //items[0].ItemName = "AK.SIBNP.R_Uraj.NPS_Berez2.DPS_1.Scr.Scr1";//this reads 2 word (short - 16 bit)
-                            //items[0].ClientHandle = Guid.NewGuid();
-                            ////items[1] = new Opc.Da.Item();
-                            ////items[1].ItemName = "AK.SIBNP.R_Uraj.SERVICE.WebRouter_AK.SIBNP.R_Uraj.StatusInt.Cause";//this reads an array of 10 words (short[])
-                            ////items[2] = new Opc.Da.Item();
-                            ////items[2].ItemName = "AK.SIBNP.R_Uraj.Offline_14";//this read a 2 word array (but in the plc the are used as bits so you have to mask them)    
-                            ////items[3] = new Opc.Da.Item();
-                            ////items[3].ItemName = "AK.SIBNP.R_Uraj.Test_14";//this read a 2 word array (but in the plc the are used as bits so you have to mask them)    
-
-                            groupRead.AddItems(items.ToArray());
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show("Ошибка при чтении тега OPC с сервера " + url + ". " + e.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-            }
+            //                groupRead.AddItems(items.ToArray());
+            //            }
+            //        }
+            //        catch (Exception e)
+            //        {
+            //            MessageBox.Show("Ошибка при чтении тега OPC с сервера " + url + ". " + e.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //        }
+            //    }
+            //}
         }
 
         public void OnShowMinimizeForm()
@@ -483,56 +499,51 @@ namespace ShutdownDiagnostic
         {
             if (_isWatching)
             {
-                if (_model.VerificationList != null && _model.VerificationList.Any())
+                if (_model.GridDataList != null && _model.GridDataList.Any())
                 {
-                    foreach (var server in _model.VerificationList)
+                    
+                        
+                    foreach (var service in _model.GridDataList.Where(x => x.ParameterStatement == ParameterStatement.Service))
                     {
-                        if (server.ServiceStatements != null && server.ServiceStatements.Any())
-                        {
-                            foreach (var service in server.ServiceStatements)
-                            {
-                                if ((string)service.VerifyIf == service.Value) service.IsVerified = true;
-                                else service.IsVerified = false;
-                            }
-                        }
-
-                        if (server.OpcStatements != null && server.OpcStatements.Any())
-                        {
-                            foreach (var tag in server.OpcStatements)
-                            {
-                                if (!tag.AllowBadQuality && _badQualityVariants.Contains(tag.Quality.ToLower()))
-                                {
-                                    tag.IsVerified = false;
-                                }
-                                else if (tag.AllowBadQuality && _badQualityVariants.Contains(tag.Quality.ToLower()))
-                                {
-                                    tag.IsVerified = true;
-                                }
-                                else if ((tag.AllowBadQuality && _goodQualityVariants.Contains(tag.Quality.ToLower()))
-                                    || (!tag.AllowBadQuality && _goodQualityVariants.Contains(tag.Quality.ToLower())))
-                                {
-                                    switch (tag.ParamType)
-                                    {
-                                        case "bool":
-                                            {
-                                                try
-                                                {
-                                                    var value = bool.Parse(tag.Value);
-                                                    tag.IsVerified = value == (bool)tag.VerifyIf;
-                                                }
-                                                catch { }
-                                                break;
-                                            }
-                                        default:
-                                            tag.IsVerified = false;
-                                            break;
-                                    }
-                                }
-                                else tag.IsVerified = false;
-
-                            }
-                        }
+                        if ((string)service.VerifyIf == service.Value) service.IsVerified = true;
+                        else service.IsVerified = false;
                     }
+
+                        
+                    foreach (var tag in _model.GridDataList.Where(x => x.ParameterStatement == ParameterStatement.OpcTag))
+                    {
+                        if (!tag.AllowBadQuality && _badQualityVariants.Contains(tag.Quality.ToLower()))
+                        {
+                            tag.IsVerified = false;
+                        }
+                        else if (tag.AllowBadQuality && _badQualityVariants.Contains(tag.Quality.ToLower()))
+                        {
+                            tag.IsVerified = true;
+                        }
+                        else if ((tag.AllowBadQuality && _goodQualityVariants.Contains(tag.Quality.ToLower()))
+                            || (!tag.AllowBadQuality && _goodQualityVariants.Contains(tag.Quality.ToLower())))
+                        {
+                            switch (tag.ParamType)
+                            {
+                                case "bool":
+                                    {
+                                        try
+                                        {
+                                            var value = bool.Parse(tag.Value);
+                                            tag.IsVerified = value == (bool)tag.VerifyIf;
+                                        }
+                                        catch { }
+                                        break;
+                                    }
+                                default:
+                                    tag.IsVerified = false;
+                                    break;
+                            }
+                        }
+                        else tag.IsVerified = false;
+
+                    }
+                    
                 }
 
 
@@ -541,15 +552,11 @@ namespace ShutdownDiagnostic
 
 
 
-                if (_model.VerificationList == null || !_model.VerificationList.Any()) SetStatusShutdownBtn(false);
-                //else if (_model.VerificationList.Where(x => x.OpcStatements == null || x.ServiceStatements == null).Count() != 0) SetStatusShutdownBtn(false);
+                if (_model.GridDataList == null || !_model.GridDataList.Any()) SetStatusShutdownBtn(false);
                 else
                 {
-                    SetStatusShutdownBtn(_model.VerificationList.Where(x => x.ServiceStatements.Any(y => !y.IsVerified) || x.OpcStatements.Any(y => !y.IsVerified)).Count() == 0);
+                    SetStatusShutdownBtn(_model.GridDataList.Count(x=>!x.IsVerified) == 0);
                 }
-
-
-
 
                 //OnRefreshView();
 
