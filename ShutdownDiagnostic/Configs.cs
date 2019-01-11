@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 
 namespace ShutdownDiagnostic
@@ -20,6 +22,6 @@ namespace ShutdownDiagnostic
         {
             var data = ConfigurationSettings.AppSettings.Get("BadQualityList");
             return data.Split(',').Select(x => x.ToLower()).ToArray(); ;
-        }
+        }        
     }
 }
