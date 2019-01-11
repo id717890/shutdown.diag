@@ -4,6 +4,7 @@ using ShutdownDiagnostic.Interface.Presenter;
 using ShutdownDiagnostic.Interface.View;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.ServiceProcess;
@@ -52,7 +53,7 @@ namespace ShutdownDiagnostic
             try
             {
                 //List<Server> model = new List<Server>();
-                List<GridData> modelGrid = new List<GridData>();
+                BindingList<GridData> modelGrid = new BindingList<GridData>();
                 if (Directory.Exists(Configs.AppFolder + "\\configs"))
                 {
                     if (File.Exists(Configs.AppFolder + "\\configs\\" + Configs.ConfigFileName))
@@ -247,7 +248,7 @@ namespace ShutdownDiagnostic
             {
                 foreach(var service in _model.GridDataList.Where(x=>x.ParameterStatement == ParameterStatement.Service))
                 {
-                    service.Value = "-1";
+                    service.Value = null;
                     service.IsVerified = false;
                 }
                 //foreach (var server in _model.VerificationList)

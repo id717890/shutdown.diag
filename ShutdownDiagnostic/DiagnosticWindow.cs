@@ -275,6 +275,7 @@ namespace ShutdownDiagnostic
             dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "StatementCaption", Name = "StatementCaption", HeaderText = "Параметр" });
             dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Value", Name = "Value", HeaderText = "Статус" });
             dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Quality", Name = "Quality", HeaderText = "Качество" });
+            dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "IsVerified", Name = "IsVerified", HeaderText = "IsVerified" });
 
 
             //dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn
@@ -327,6 +328,56 @@ namespace ShutdownDiagnostic
             //    MessageBox.Show("Prevet");
             //    e.Cancel = true;
             //}
+        }
+
+        private void dgDiagnostic_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            var statement = dgDiagnostic.Rows[e.RowIndex].DataBoundItem as GridData;
+            if (statement != null)
+            {
+                if (statement.ParameterStatement == ParameterStatement.Service)
+                {
+                    if (dgDiagnostic.Columns[e.ColumnIndex].DataPropertyName == "Value")
+                    {
+                        switch (statement.Value)
+                        {
+                            case "1":
+                                e.Value = "Остановлена";
+                                break;
+                            case "4":
+                                e.Value = "Работаете";
+                                break;
+                            case "-1":
+                                e.Value = "Не определено";
+                                break;
+                        }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(statement.Value))
+                {
+                    dgDiagnostic.Rows[e.RowIndex].DefaultCellStyle.BackColor = _colorUndefined;
+                    //e.CellStyle.BackColor = _colorUndefined;
+                } else
+                {
+                    switch (statement.IsVerified)
+                    {
+                        case true:
+                            dgDiagnostic.Rows[e.RowIndex].DefaultCellStyle.BackColor = _colorVerified;
+                            //dgDiagnostic.Rows[e.RowIndex].Cells[0].Style.BackColor = _colorVerified;
+                            //dgDiagnostic.Rows[e.RowIndex].Cells[1].Style.BackColor = _colorVerified;
+                            //dgDiagnostic.Rows[e.RowIndex].Cells[2].Style.BackColor = _colorVerified;
+                            break;
+                        case false:
+                            dgDiagnostic.Rows[e.RowIndex].DefaultCellStyle.BackColor = _colorNotVerified;
+                            //dgDiagnostic.Rows[e.RowIndex].Cells[0].Style.BackColor = _colorNotVerified;
+                            //dgDiagnostic.Rows[e.RowIndex].Cells[1].Style.BackColor = _colorNotVerified;
+                            //dgDiagnostic.Rows[e.RowIndex].Cells[2].Style.BackColor = _colorNotVerified;
+
+                            break;
+                    }
+                }
+            }
         }
     }
 }
