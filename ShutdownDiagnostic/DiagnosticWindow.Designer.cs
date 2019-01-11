@@ -40,7 +40,6 @@
             this.btnRestartServer = new System.Windows.Forms.Button();
             this.btnStartWatch = new System.Windows.Forms.Button();
             this.timerServicesWatcher = new System.Windows.Forms.Timer(this.components);
-            this.timerRenderView = new System.Windows.Forms.Timer(this.components);
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).BeginInit();
             this.panel1.SuspendLayout();
@@ -58,7 +57,7 @@
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 95F));
-            this.tlpMain.Size = new System.Drawing.Size(1014, 630);
+            this.tlpMain.Size = new System.Drawing.Size(1152, 499);
             this.tlpMain.TabIndex = 0;
             // 
             // dgDiagnostic
@@ -66,7 +65,6 @@
             this.dgDiagnostic.AllowUserToAddRows = false;
             this.dgDiagnostic.AllowUserToDeleteRows = false;
             this.dgDiagnostic.AllowUserToOrderColumns = true;
-            this.dgDiagnostic.AllowUserToResizeColumns = false;
             this.dgDiagnostic.AllowUserToResizeRows = false;
             this.dgDiagnostic.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgDiagnostic.BackgroundColor = System.Drawing.SystemColors.Control;
@@ -98,7 +96,7 @@
             this.dgDiagnostic.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgDiagnostic.RowTemplate.Height = 27;
             this.dgDiagnostic.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgDiagnostic.Size = new System.Drawing.Size(1008, 529);
+            this.dgDiagnostic.Size = new System.Drawing.Size(1146, 398);
             this.dgDiagnostic.TabIndex = 0;
             this.dgDiagnostic.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgDiagnostic_CellFormatting);
             // 
@@ -108,9 +106,9 @@
             this.panel1.Controls.Add(this.btnRestartServer);
             this.panel1.Controls.Add(this.btnStartWatch);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 538);
+            this.panel1.Location = new System.Drawing.Point(3, 407);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1008, 89);
+            this.panel1.Size = new System.Drawing.Size(1146, 89);
             this.panel1.TabIndex = 1;
             // 
             // btnStopWatch
@@ -136,7 +134,7 @@
             this.btnRestartServer.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnRestartServer.Image = global::ShutdownDiagnostic.Properties.Resources.reset1_37;
             this.btnRestartServer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRestartServer.Location = new System.Drawing.Point(808, 0);
+            this.btnRestartServer.Location = new System.Drawing.Point(946, 0);
             this.btnRestartServer.Name = "btnRestartServer";
             this.btnRestartServer.Size = new System.Drawing.Size(200, 89);
             this.btnRestartServer.TabIndex = 1;
@@ -164,21 +162,16 @@
             // 
             this.timerServicesWatcher.Interval = 2000;
             // 
-            // timerRenderView
-            // 
-            this.timerRenderView.Interval = 2000;
-            // 
             // DiagnosticWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1014, 630);
+            this.ClientSize = new System.Drawing.Size(1152, 499);
             this.Controls.Add(this.tlpMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DiagnosticWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DiagnosticWindow_FormClosing);
             this.tlpMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).EndInit();
             this.panel1.ResumeLayout(false);
@@ -194,7 +187,6 @@
         private System.Windows.Forms.Button btnStartWatch;
         private System.Windows.Forms.Button btnRestartServer;
         private System.Windows.Forms.Timer timerServicesWatcher;
-        private System.Windows.Forms.Timer timerRenderView;
         private System.Windows.Forms.Button btnStopWatch;
     }
 }

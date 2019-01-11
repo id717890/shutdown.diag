@@ -3,11 +3,9 @@ using ShutdownDiagnostic.Interface.Model;
 using ShutdownDiagnostic.Interface.Presenter;
 using ShutdownDiagnostic.Interface.View;
 using System;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace ShutdownDiagnostic
@@ -30,7 +28,7 @@ namespace ShutdownDiagnostic
         private Color _colorUndefined = Color.LightGray;
         private Color _colorVerified = Color.LightGreen;
         private Color _colorNotVerified = Color.Red;
-        private int _selectedRow;
+        //private int _selectedRow;
 
         public bool IsShutdowActive { set => btnRestartServer.Invoke(new EventHandler(delegate { btnRestartServer.Enabled = value; })); }
         public bool IsShow
@@ -61,15 +59,12 @@ namespace ShutdownDiagnostic
             btnStartWatch.Click += (sender, e) =>
             {
                 timerServicesWatcher.Start();
-                timerRenderView.Start();
-
                 callback.OnStarWatch();
                 callback.OnCheckOpc();
 
             };
             btnStopWatch.Click += (sender, e) =>
             {
-                timerRenderView.Stop();
                 timerServicesWatcher.Stop();
                 callback.OnStopWatch();
             };
@@ -81,37 +76,39 @@ namespace ShutdownDiagnostic
             {
                 callback.OnCheckServices();
             };
-            timerRenderView.Tick += (sender, e) =>
+
+            FormClosing += (sender, e) =>
             {
-                //callback.OnRefreshView();
+                callback.OnStopWatch();
             };
 
             Resize += (sender, e) =>
             {
-                //if (WindowState == FormWindowState.Minimized)
-                //{
-                //    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                //    callback.OnShowMinimizeForm();
-                //}
-                //else if (WindowState == FormWindowState.Maximized)
-                //{
-                //    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                //    dgDiagnostic.Columns[1].Width = 200;
-                //    dgDiagnostic.Columns[2].Width = 200;
-
-                //} else if (WindowState == FormWindowState.Normal) dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                if (WindowState == FormWindowState.Minimized)
+                {
+                    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                    callback.OnShowMinimizeForm();
+                }
+                else if (WindowState == FormWindowState.Maximized)
+                {
+                    dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                    dgDiagnostic.Columns[0].Width = 200;
+                    dgDiagnostic.Columns[2].Width = 200;
+                    dgDiagnostic.Columns[3].Width = 200;
+                }
+                else if (WindowState == FormWindowState.Normal) dgDiagnostic.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             };
         }
 
-        private void RenderServerHeader(Server server, int row)
-        {
-            var color = Color.LightSkyBlue;
-            dgDiagnostic.Rows.Add(server.Caption);
-            dgDiagnostic.Rows[row - 1].Cells[0].Style.Font = new Font("Arial", 14, FontStyle.Bold);
-            dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = color;
-            dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = color;
-            dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = color;
-        }
+        //private void RenderServerHeader(Server server, int row)
+        //{
+        //    var color = Color.LightSkyBlue;
+        //    dgDiagnostic.Rows.Add(server.Caption);
+        //    dgDiagnostic.Rows[row - 1].Cells[0].Style.Font = new Font("Arial", 14, FontStyle.Bold);
+        //    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = color;
+        //    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = color;
+        //    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = color;
+        //}
 
         private string GetServiceState(string numberState)
         {
@@ -130,56 +127,56 @@ namespace ShutdownDiagnostic
 
         }
 
-        private void RenderServerStatement(BaseStatement statement, int row)
-        {
-            var statementItem = statement as OpcStatement;
-            dgDiagnostic.Rows.Add(statement.Caption, statementItem !=null ? statementItem.Value : GetServiceState(statement.Value), statementItem != null ? statementItem.Quality : string.Empty);
-            if (string.IsNullOrEmpty(statement.Value))
-            {
-                dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorUndefined;
-                dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorUndefined;
-                dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorUndefined;
-            }
-            else
-            {
-                if (statement.IsVerified)
-                {
-                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorVerified;
-                }
-                else
-                {
-                    dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorNotVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorNotVerified;
-                    dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorNotVerified;
-                }
-            }
+        //private void RenderServerStatement(BaseStatement statement, int row)
+        //{
+        //    var statementItem = statement as OpcStatement;
+        //    dgDiagnostic.Rows.Add(statement.Caption, statementItem !=null ? statementItem.Value : GetServiceState(statement.Value), statementItem != null ? statementItem.Quality : string.Empty);
+        //    if (string.IsNullOrEmpty(statement.Value))
+        //    {
+        //        dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorUndefined;
+        //        dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorUndefined;
+        //        dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorUndefined;
+        //    }
+        //    else
+        //    {
+        //        if (statement.IsVerified)
+        //        {
+        //            dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorVerified;
+        //            dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorVerified;
+        //            dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorVerified;
+        //        }
+        //        else
+        //        {
+        //            dgDiagnostic.Rows[row - 1].Cells[0].Style.BackColor = _colorNotVerified;
+        //            dgDiagnostic.Rows[row - 1].Cells[1].Style.BackColor = _colorNotVerified;
+        //            dgDiagnostic.Rows[row - 1].Cells[2].Style.BackColor = _colorNotVerified;
+        //        }
+        //    }
 
-        }
+        //}
 
-        private class TestData: INotifyPropertyChanged
-        {
-            public string Server { get; set; }
-            public string Caption { get; set; }
+        //private class TestData: INotifyPropertyChanged
+        //{
+        //    public string Server { get; set; }
+        //    public string Caption { get; set; }
 
-            string status;
-            public string Status { get { return status; } set { status = value; NotifyChanged("Status"); } }
+        //    string status;
+        //    public string Status { get { return status; } set { status = value; NotifyChanged("Status"); } }
 
-            string quality;
-            public string Quality { get { return quality; } set { quality = value; NotifyChanged("Quality"); } }
+        //    string quality;
+        //    public string Quality { get { return quality; } set { quality = value; NotifyChanged("Quality"); } }
 
-            void NotifyChanged(string prop)
-            {
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
-            }
-            public event PropertyChangedEventHandler PropertyChanged;
-        }
+        //    void NotifyChanged(string prop)
+        //    {
+        //        if (PropertyChanged != null)
+        //            PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        //    }
+        //    public event PropertyChangedEventHandler PropertyChanged;
+        //}
 
         public void RenderGrid(IDiagnosticViewModel model)
         {
-            var list = model.GridDataList;
+            var list = model.GridDataList.OrderByDescending(x => x.Order).ThenBy(x=>x.ParameterStatement);
 
             //if (model.VerificationList != null && model.VerificationList.Any())
             //{
@@ -218,10 +215,15 @@ namespace ShutdownDiagnostic
             var grouper = new Subro.Controls.DataGridViewGrouper(dgDiagnostic);
             grouper.SetGroupOn<GridData>(t => t.ServerCaption);
             grouper.Options.ShowGroupName = false;
-
+            grouper.DisplayGroup += (sender, e) =>
+            {
+                e.BackColor = Color.Orange;
+                //e.BackColor = (e.Group.GroupIndex % 2) == 0 ? Color.Orange : Color.LightBlue;
+                //e.Header = "[" + e.Header + "], grp: " + e.Group.GroupIndex;
+                //e.DisplayValue = "Value is " + e.DisplayValue;
+                //e.Summary = "contains " + e.Group.Count + " rows";
+            };
             //grouper.SetGroupOn("TypeProperty");
-
-
             //if (dgDiagnostic.CurrentCell != null)
             //{
             //    _selectedRow = dgDiagnostic.CurrentCell.RowIndex;
@@ -275,59 +277,12 @@ namespace ShutdownDiagnostic
             dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "StatementCaption", Name = "StatementCaption", HeaderText = "Параметр" });
             dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Value", Name = "Value", HeaderText = "Статус" });
             dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Quality", Name = "Quality", HeaderText = "Качество" });
-            dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "IsVerified", Name = "IsVerified", HeaderText = "IsVerified" });
-
-
-            //dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn
-            //{
-            //    DataPropertyName = "StatementId"
-            //});
-            //dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn
-            //{
-            //    DataPropertyName = "Value"
-            //});
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add(new DataGridViewColumn());
-            //dgDiagnostic.Columns.Add("Parameter", "Параметр");
-            //dgDiagnostic.Columns.Add("Status", "Статус");
-            //dgDiagnostic.Columns.Add("Quality", "Качество*");
-            //foreach (DataGridViewColumn column in dgDiagnostic.Columns)
-            //{
-            //    column.SortMode = DataGridViewColumnSortMode.NotSortable;
-            //}
+            //dgDiagnostic.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "IsVerified", Name = "IsVerified", HeaderText = "IsVerified" });
         }
 
         public void Exit()
         {
             Close();
-        }
-
-        private void DiagnosticWindow_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            //if (ShutdownBlockReasonCreate(this.Handle, "DONT:"))
-            //{
-            //    blocked = true;
-            //    MessageBox.Show("Blocked");
-            //    e.Cancel = true;
-            //} else
-            //    MessageBox.Show("Block FAILED");
-            //if (e.CloseReason.Equals(CloseReason.WindowsShutDown)) {
-            //    MessageBox.Show("Prevet");
-            //    e.Cancel = true;
-            //}
         }
 
         private void dgDiagnostic_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -339,41 +294,22 @@ namespace ShutdownDiagnostic
                 {
                     if (dgDiagnostic.Columns[e.ColumnIndex].DataPropertyName == "Value")
                     {
-                        switch (statement.Value)
-                        {
-                            case "1":
-                                e.Value = "Остановлена";
-                                break;
-                            case "4":
-                                e.Value = "Работаете";
-                                break;
-                            case "-1":
-                                e.Value = "Не определено";
-                                break;
-                        }
+                        e.Value = GetServiceState(statement.Value);
                     }
                 }
 
                 if (string.IsNullOrEmpty(statement.Value))
                 {
                     dgDiagnostic.Rows[e.RowIndex].DefaultCellStyle.BackColor = _colorUndefined;
-                    //e.CellStyle.BackColor = _colorUndefined;
                 } else
                 {
                     switch (statement.IsVerified)
                     {
                         case true:
                             dgDiagnostic.Rows[e.RowIndex].DefaultCellStyle.BackColor = _colorVerified;
-                            //dgDiagnostic.Rows[e.RowIndex].Cells[0].Style.BackColor = _colorVerified;
-                            //dgDiagnostic.Rows[e.RowIndex].Cells[1].Style.BackColor = _colorVerified;
-                            //dgDiagnostic.Rows[e.RowIndex].Cells[2].Style.BackColor = _colorVerified;
                             break;
                         case false:
                             dgDiagnostic.Rows[e.RowIndex].DefaultCellStyle.BackColor = _colorNotVerified;
-                            //dgDiagnostic.Rows[e.RowIndex].Cells[0].Style.BackColor = _colorNotVerified;
-                            //dgDiagnostic.Rows[e.RowIndex].Cells[1].Style.BackColor = _colorNotVerified;
-                            //dgDiagnostic.Rows[e.RowIndex].Cells[2].Style.BackColor = _colorNotVerified;
-
                             break;
                     }
                 }
