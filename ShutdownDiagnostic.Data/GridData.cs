@@ -67,6 +67,9 @@ namespace ShutdownDiagnostic.Data
         string quality = string.Empty;
         public string Quality { get { return quality; } set { quality = value; NotifyChanged("Quality"); } }
 
+        bool isIgnore = false;
+        public bool IsIgnore { get { return isIgnore; } set { isIgnore = value; NotifyChanged("IsIgnore"); } }
+
         public string ParamType { get; set; }
 
         public bool AllowBadQuality { get; set; }

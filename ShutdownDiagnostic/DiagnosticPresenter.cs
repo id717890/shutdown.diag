@@ -362,7 +362,6 @@ namespace ShutdownDiagnostic
             if (_opcServers != null && _opcServers.Any()) foreach (var server in _opcServers.Where(x => x.Value.IsConnected)) server.Value.Disconnect();
         }
 
-
         void TagValue_DataChanged(object subscriptionHandle, object requestHandle, Opc.Da.ItemValueResult[] values)
         {
             for (int i = 0; i < values.Length; i++)
@@ -461,6 +460,15 @@ namespace ShutdownDiagnostic
             _view.IsShow = true;
             _viewMinimize.IsShow = false;
         }
+
+        public void OnSetIgnore(Guid id, bool isIgnore)
+        {
+            if (_model != null && _model.GridDataList !=null && _model.GridDataList.Any())
+            {
+                var statement = _model.GridDataList.SingleOrDefault(x => x.StatementId == id);
+                if (statement !=null) statement.IsIgnore = isIgnore;
+            }
+        }
         #endregion
 
         private void SetStatusShutdownBtn(bool state)
@@ -518,7 +526,7 @@ namespace ShutdownDiagnostic
                 if (_model.GridDataList == null || !_model.GridDataList.Any()) SetStatusShutdownBtn(false);
                 else
                 {
-                    SetStatusShutdownBtn(_model.GridDataList.Count(x=>!x.IsVerified) == 0);
+                    SetStatusShutdownBtn(_model.GridDataList.Count(x=>!x.IsVerified && !x.IsIgnore) == 0);
                 }
             }
         }

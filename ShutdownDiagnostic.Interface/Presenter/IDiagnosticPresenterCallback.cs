@@ -1,4 +1,6 @@
-﻿namespace ShutdownDiagnostic.Interface.Presenter
+﻿using System;
+
+namespace ShutdownDiagnostic.Interface.Presenter
 {
     public interface IDiagnosticPresenterCallback
     {
@@ -10,5 +12,6 @@
         void OnRefreshView();
         void OnShowMinimizeForm();
         void OnShowNormalForm();
+        void OnSetIgnore(Guid id, bool isIgnore);
     }
 }

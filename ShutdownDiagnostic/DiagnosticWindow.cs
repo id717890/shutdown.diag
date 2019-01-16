@@ -28,6 +28,8 @@ namespace ShutdownDiagnostic
         private Color _colorUndefined = Color.LightGray;
         private Color _colorVerified = Color.LightGreen;
         private Color _colorNotVerified = Color.Red;
+        private Color _colorIgnored = Color.BlueViolet;
+
         //private int _selectedRow;
 
         public bool IsShutdowActive { set => btnRestartServer.Invoke(new EventHandler(delegate { btnRestartServer.Enabled = value; })); }
@@ -56,6 +58,22 @@ namespace ShutdownDiagnostic
 
         public void Attach(IDiagnosticPresenterCallback callback)
         {
+            cmItemIgnore.Click += (sender, e) =>
+            {
+                var statement = dgDiagnostic.Rows[dgDiagnostic.CurrentCell.RowIndex].DataBoundItem as GridData;
+                if (statement != null)
+                {
+                    callback.OnSetIgnore(statement.StatementId, true);
+                }
+            };
+            cmItemNotIgnore.Click += (sender, e) =>
+            {
+                var statement = dgDiagnostic.Rows[dgDiagnostic.CurrentCell.RowIndex].DataBoundItem as GridData;
+                if (statement != null)
+                {
+                    callback.OnSetIgnore(statement.StatementId, false);
+                }
+            };
             btnStartWatch.Click += (sender, e) =>
             {
                 timerServicesWatcher.Start();
@@ -176,7 +194,7 @@ namespace ShutdownDiagnostic
 
         public void RenderGrid(IDiagnosticViewModel model)
         {
-            var list = model.GridDataList.OrderByDescending(x => x.Order).ThenBy(x=>x.ParameterStatement);
+            var list = model.GridDataList.OrderByDescending(x => x.Order).ThenBy(x => x.ParameterStatement);
 
             //if (model.VerificationList != null && model.VerificationList.Any())
             //{
@@ -298,10 +316,14 @@ namespace ShutdownDiagnostic
                     }
                 }
 
-                if (string.IsNullOrEmpty(statement.Value))
+                if (string.IsNullOrEmpty(statement.Value) && !statement.IsIgnore)
                 {
                     dgDiagnostic.Rows[e.RowIndex].DefaultCellStyle.BackColor = _colorUndefined;
-                } else
+                } else if ((string.IsNullOrEmpty(statement.Value) && statement.IsIgnore) || (!string.IsNullOrEmpty(statement.Value) && statement.IsIgnore))
+                {
+                    dgDiagnostic.Rows[e.RowIndex].DefaultCellStyle.BackColor = _colorIgnored;
+                }
+                else
                 {
                     switch (statement.IsVerified)
                     {

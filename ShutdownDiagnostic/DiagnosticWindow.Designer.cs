@@ -35,18 +35,18 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DiagnosticWindow));
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.dgDiagnostic = new System.Windows.Forms.DataGridView();
+            this.cmMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmItemIgnore = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmItemNotIgnore = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnStopWatch = new System.Windows.Forms.Button();
             this.btnRestartServer = new System.Windows.Forms.Button();
             this.btnStartWatch = new System.Windows.Forms.Button();
             this.timerServicesWatcher = new System.Windows.Forms.Timer(this.components);
-            this.cmMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.cmItemIgnore = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmItemNotIgnore = new System.Windows.Forms.ToolStripMenuItem();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).BeginInit();
-            this.panel1.SuspendLayout();
             this.cmMenu.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -104,6 +104,26 @@
             this.dgDiagnostic.Size = new System.Drawing.Size(1146, 398);
             this.dgDiagnostic.TabIndex = 0;
             this.dgDiagnostic.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgDiagnostic_CellFormatting);
+            // 
+            // cmMenu
+            // 
+            this.cmMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmItemIgnore,
+            this.cmItemNotIgnore});
+            this.cmMenu.Name = "cmMenu";
+            this.cmMenu.Size = new System.Drawing.Size(181, 70);
+            // 
+            // cmItemIgnore
+            // 
+            this.cmItemIgnore.Name = "cmItemIgnore";
+            this.cmItemIgnore.Size = new System.Drawing.Size(180, 22);
+            this.cmItemIgnore.Text = "Снять с контроля";
+            // 
+            // cmItemNotIgnore
+            // 
+            this.cmItemNotIgnore.Name = "cmItemNotIgnore";
+            this.cmItemNotIgnore.Size = new System.Drawing.Size(180, 22);
+            this.cmItemNotIgnore.Text = "Взять на контроль";
             // 
             // panel1
             // 
@@ -167,26 +187,6 @@
             // 
             this.timerServicesWatcher.Interval = 2000;
             // 
-            // cmMenu
-            // 
-            this.cmMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cmItemIgnore,
-            this.cmItemNotIgnore});
-            this.cmMenu.Name = "cmMenu";
-            this.cmMenu.Size = new System.Drawing.Size(170, 48);
-            // 
-            // cmItemIgnore
-            // 
-            this.cmItemIgnore.Name = "cmItemIgnore";
-            this.cmItemIgnore.Size = new System.Drawing.Size(169, 22);
-            this.cmItemIgnore.Text = "Снять с контроля";
-            // 
-            // cmItemNotIgnore
-            // 
-            this.cmItemNotIgnore.Name = "cmItemNotIgnore";
-            this.cmItemNotIgnore.Size = new System.Drawing.Size(169, 22);
-            this.cmItemNotIgnore.Text = "Взять на контроль";
-            // 
             // DiagnosticWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -199,8 +199,8 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.tlpMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).EndInit();
-            this.panel1.ResumeLayout(false);
             this.cmMenu.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
