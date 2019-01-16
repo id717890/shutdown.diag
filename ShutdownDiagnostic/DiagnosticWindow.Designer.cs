@@ -40,9 +40,13 @@
             this.btnRestartServer = new System.Windows.Forms.Button();
             this.btnStartWatch = new System.Windows.Forms.Button();
             this.timerServicesWatcher = new System.Windows.Forms.Timer(this.components);
+            this.cmMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmItemIgnore = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmItemNotIgnore = new System.Windows.Forms.ToolStripMenuItem();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).BeginInit();
             this.panel1.SuspendLayout();
+            this.cmMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -79,6 +83,7 @@
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgDiagnostic.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgDiagnostic.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgDiagnostic.ContextMenuStrip = this.cmMenu;
             this.dgDiagnostic.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgDiagnostic.Location = new System.Drawing.Point(3, 3);
             this.dgDiagnostic.MultiSelect = false;
@@ -162,6 +167,26 @@
             // 
             this.timerServicesWatcher.Interval = 2000;
             // 
+            // cmMenu
+            // 
+            this.cmMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmItemIgnore,
+            this.cmItemNotIgnore});
+            this.cmMenu.Name = "cmMenu";
+            this.cmMenu.Size = new System.Drawing.Size(170, 48);
+            // 
+            // cmItemIgnore
+            // 
+            this.cmItemIgnore.Name = "cmItemIgnore";
+            this.cmItemIgnore.Size = new System.Drawing.Size(169, 22);
+            this.cmItemIgnore.Text = "Снять с контроля";
+            // 
+            // cmItemNotIgnore
+            // 
+            this.cmItemNotIgnore.Name = "cmItemNotIgnore";
+            this.cmItemNotIgnore.Size = new System.Drawing.Size(169, 22);
+            this.cmItemNotIgnore.Text = "Взять на контроль";
+            // 
             // DiagnosticWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -175,6 +200,7 @@
             this.tlpMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).EndInit();
             this.panel1.ResumeLayout(false);
+            this.cmMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -188,6 +214,9 @@
         private System.Windows.Forms.Button btnRestartServer;
         private System.Windows.Forms.Timer timerServicesWatcher;
         private System.Windows.Forms.Button btnStopWatch;
+        private System.Windows.Forms.ContextMenuStrip cmMenu;
+        private System.Windows.Forms.ToolStripMenuItem cmItemIgnore;
+        private System.Windows.Forms.ToolStripMenuItem cmItemNotIgnore;
     }
 }
 
