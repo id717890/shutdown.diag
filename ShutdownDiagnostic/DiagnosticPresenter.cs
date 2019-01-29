@@ -193,7 +193,7 @@ namespace ShutdownDiagnostic
                                                             Domain = serverItem.Domain,
                                                             Order = serverItem.Order,
 
-                                                            StatementId = serverItem.Id,
+                                                            StatementId = serviceItem.Id,
                                                             IsVerified = serviceItem.IsVerified,
                                                             StatementCaption = serviceItem.Caption,
                                                             TagValue = serviceItem.TagValue,
@@ -465,6 +465,7 @@ namespace ShutdownDiagnostic
         {
             if (_model != null && _model.GridDataList !=null && _model.GridDataList.Any())
             {
+                var s = _model.GridDataList.Where(x => x.StatementId == id);
                 var statement = _model.GridDataList.SingleOrDefault(x => x.StatementId == id);
                 if (statement !=null) statement.IsIgnore = isIgnore;
             }

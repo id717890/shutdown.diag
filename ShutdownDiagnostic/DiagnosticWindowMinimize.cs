@@ -7,8 +7,11 @@ namespace ShutdownDiagnostic
 {
     public partial class DiagnosticWindowMinimize : Form, IDiagnosticViewMinimize
     {
+        private int _closeState = 0;
+
         public DiagnosticWindowMinimize()
         {
+            Text = Environment.MachineName.ToUpper();
             InitializeComponent();
         }
 
@@ -32,6 +35,29 @@ namespace ShutdownDiagnostic
 
         public void Attach(IDiagnosticPresenterCallback callback)
         {
+            notifyIconMinimize.DoubleClick += (sender, e) =>
+            {
+                _closeState = 0;
+                notifyIconMinimize.Visible = false;
+                Show();
+                WindowState = FormWindowState.Normal;
+            };
+
+            cmShowWindow.Click += (sender, e) =>
+            {
+                _closeState = 0;
+                notifyIconMinimize.Visible = false;
+                Show();
+                WindowState = FormWindowState.Normal;
+            };
+
+            cmExit.Click += (sender, e) =>
+            {
+                _closeState = 1;
+                callback.OnStopWatch();
+                Close();
+            };
+
             btnRestart.Click += (sender, e) =>
             {
                 callback.OnRunCmdCommand();
@@ -44,8 +70,15 @@ namespace ShutdownDiagnostic
 
             FormClosing += (sender, e) =>
             {
-                callback.OnShowNormalForm();
-                e.Cancel = true;
+                if (_closeState == 0)
+                {
+                    Hide();
+                    notifyIconMinimize.Visible = true;
+                    notifyIconMinimize.ShowBalloonTip(4000);
+                    e.Cancel = true;
+                };
+                //callback.OnShowNormalForm();
+                //e.Cancel = true;
             };
         }
     }

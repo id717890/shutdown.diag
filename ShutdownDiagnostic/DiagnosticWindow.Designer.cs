@@ -43,10 +43,16 @@
             this.btnRestartServer = new System.Windows.Forms.Button();
             this.btnStartWatch = new System.Windows.Forms.Button();
             this.timerServicesWatcher = new System.Windows.Forms.Timer(this.components);
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.cmMemuTray = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmShowWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).BeginInit();
             this.cmMenu.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.cmMemuTray.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -111,18 +117,18 @@
             this.cmItemIgnore,
             this.cmItemNotIgnore});
             this.cmMenu.Name = "cmMenu";
-            this.cmMenu.Size = new System.Drawing.Size(181, 70);
+            this.cmMenu.Size = new System.Drawing.Size(170, 48);
             // 
             // cmItemIgnore
             // 
             this.cmItemIgnore.Name = "cmItemIgnore";
-            this.cmItemIgnore.Size = new System.Drawing.Size(180, 22);
+            this.cmItemIgnore.Size = new System.Drawing.Size(169, 22);
             this.cmItemIgnore.Text = "Снять с контроля";
             // 
             // cmItemNotIgnore
             // 
             this.cmItemNotIgnore.Name = "cmItemNotIgnore";
-            this.cmItemNotIgnore.Size = new System.Drawing.Size(180, 22);
+            this.cmItemNotIgnore.Size = new System.Drawing.Size(169, 22);
             this.cmItemNotIgnore.Text = "Взять на контроль";
             // 
             // panel1
@@ -187,6 +193,41 @@
             // 
             this.timerServicesWatcher.Interval = 2000;
             // 
+            // notifyIcon
+            // 
+            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.notifyIcon.BalloonTipText = "Программа продолжает работу в сввернутом режиме.";
+            this.notifyIcon.BalloonTipTitle = "Внимание";
+            this.notifyIcon.ContextMenuStrip = this.cmMemuTray;
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "notifyIcon1";
+            // 
+            // cmMemuTray
+            // 
+            this.cmMemuTray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmShowWindow,
+            this.toolStripSeparator1,
+            this.cmExit});
+            this.cmMemuTray.Name = "cmMemuTray";
+            this.cmMemuTray.Size = new System.Drawing.Size(153, 76);
+            // 
+            // cmExit
+            // 
+            this.cmExit.Name = "cmExit";
+            this.cmExit.Size = new System.Drawing.Size(152, 22);
+            this.cmExit.Text = "Выоход";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // cmShowWindow
+            // 
+            this.cmShowWindow.Name = "cmShowWindow";
+            this.cmShowWindow.Size = new System.Drawing.Size(152, 22);
+            this.cmShowWindow.Text = "Показать окно";
+            // 
             // DiagnosticWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -201,6 +242,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).EndInit();
             this.cmMenu.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.cmMemuTray.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -217,6 +259,11 @@
         private System.Windows.Forms.ContextMenuStrip cmMenu;
         private System.Windows.Forms.ToolStripMenuItem cmItemIgnore;
         private System.Windows.Forms.ToolStripMenuItem cmItemNotIgnore;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ContextMenuStrip cmMemuTray;
+        private System.Windows.Forms.ToolStripMenuItem cmExit;
+        private System.Windows.Forms.ToolStripMenuItem cmShowWindow;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

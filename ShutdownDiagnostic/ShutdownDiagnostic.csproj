@@ -129,6 +129,8 @@
     <Content Include="OPC libraries\OpcNetApi.Com.dll" />
     <Content Include="OPC libraries\OpcNetApi.dll" />
     <Content Include="OPC libraries\OpcNetApi.Xml.dll" />
+    <None Include="Resources\checklist-icon-350-28.png" />
+    <None Include="pencil.ico" />
     <None Include="Resources\reset1_37.png" />
     <None Include="Resources\stop1_38.png" />
     <None Include="Resources\play1_38.png" />

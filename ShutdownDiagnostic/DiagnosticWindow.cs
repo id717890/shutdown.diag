@@ -29,6 +29,7 @@ namespace ShutdownDiagnostic
         private Color _colorVerified = Color.LightGreen;
         private Color _colorNotVerified = Color.Red;
         private Color _colorIgnored = Color.BlueViolet;
+        private int _closeState = 0;
 
         //private int _selectedRow;
 
@@ -40,7 +41,7 @@ namespace ShutdownDiagnostic
                 if (value == true)
                 {
                     Show();
-                    WindowState = FormWindowState.Normal;
+                    WindowState = FormWindowState.Maximized;
                 }
                 else Hide();
             }
@@ -52,18 +53,45 @@ namespace ShutdownDiagnostic
 
         public DiagnosticWindow()
         {
+            Text = Environment.MachineName.ToUpper();
             InitializeComponent();
             InitializeColumnsOfGrid();
         }
 
         public void Attach(IDiagnosticPresenterCallback callback)
         {
+            notifyIcon.DoubleClick += (sender, e) =>
+            {
+                _closeState = 0;
+                notifyIcon.Visible = false;
+                Show();
+                WindowState = FormWindowState.Maximized;
+            };
+
+            cmShowWindow.Click += (sender, e) =>
+            {
+                _closeState = 0;
+                notifyIcon.Visible = false;
+                Show();
+                WindowState = FormWindowState.Maximized;
+            };
+
+            cmExit.Click += (sender, e) =>
+            {
+                _closeState = 1;
+                callback.OnStopWatch();
+                Close();
+            };
+
             cmItemIgnore.Click += (sender, e) =>
             {
                 var statement = dgDiagnostic.Rows[dgDiagnostic.CurrentCell.RowIndex].DataBoundItem as GridData;
-                if (statement != null)
+                if (statement != null && statement.ParameterStatement != ParameterStatement.Service)
                 {
                     callback.OnSetIgnore(statement.StatementId, true);
+                } else if (statement !=null && statement.ParameterStatement == ParameterStatement.Service)
+                {
+                    MessageBox.Show("Службы на сервере не подлежат снятию с контроля");
                 }
             };
             cmItemNotIgnore.Click += (sender, e) =>
@@ -97,7 +125,13 @@ namespace ShutdownDiagnostic
 
             FormClosing += (sender, e) =>
             {
-                callback.OnStopWatch();
+                if (_closeState == 0)
+                {
+                    Hide();
+                    notifyIcon.Visible = true;
+                    notifyIcon.ShowBalloonTip(4000);
+                    e.Cancel = true;
+                };
             };
 
             Resize += (sender, e) =>
