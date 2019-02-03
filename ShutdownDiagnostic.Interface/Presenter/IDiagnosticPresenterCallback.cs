@@ -13,5 +13,6 @@ namespace ShutdownDiagnostic.Interface.Presenter
         void OnShowMinimizeForm();
         void OnShowNormalForm();
         void OnSetIgnore(Guid id, bool isIgnore);
+        void OnSetIgnoreAllModules(bool isIgnore);
     }
 }

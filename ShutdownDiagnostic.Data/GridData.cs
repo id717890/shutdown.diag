@@ -49,6 +49,7 @@ namespace ShutdownDiagnostic.Data
         public string StatementCaption { get; set; }
         public object VerifyIf { get; set; }
         public ParameterStatement ParameterStatement { get; set; }
+        public bool IsModule { get; set; }
 
         /// <summary>
         /// Значение тэга из конфигурации (может быть либо имя службы или тэг OPC)

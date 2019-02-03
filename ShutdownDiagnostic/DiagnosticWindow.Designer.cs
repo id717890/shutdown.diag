@@ -38,6 +38,9 @@
             this.cmMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmItemIgnore = new System.Windows.Forms.ToolStripMenuItem();
             this.cmItemNotIgnore = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmItemIgnoreAllModules = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmItemNotIgnoreAllModules = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnStopWatch = new System.Windows.Forms.Button();
             this.btnRestartServer = new System.Windows.Forms.Button();
@@ -45,9 +48,9 @@
             this.timerServicesWatcher = new System.Windows.Forms.Timer(this.components);
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmMemuTray = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.cmExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.cmShowWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgDiagnostic)).BeginInit();
             this.cmMenu.SuspendLayout();
@@ -115,21 +118,41 @@
             // 
             this.cmMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmItemIgnore,
-            this.cmItemNotIgnore});
+            this.cmItemNotIgnore,
+            this.toolStripSeparator2,
+            this.cmItemIgnoreAllModules,
+            this.cmItemNotIgnoreAllModules});
             this.cmMenu.Name = "cmMenu";
-            this.cmMenu.Size = new System.Drawing.Size(170, 48);
+            this.cmMenu.Size = new System.Drawing.Size(230, 98);
             // 
             // cmItemIgnore
             // 
             this.cmItemIgnore.Name = "cmItemIgnore";
-            this.cmItemIgnore.Size = new System.Drawing.Size(169, 22);
+            this.cmItemIgnore.Size = new System.Drawing.Size(229, 22);
             this.cmItemIgnore.Text = "Снять с контроля";
             // 
             // cmItemNotIgnore
             // 
             this.cmItemNotIgnore.Name = "cmItemNotIgnore";
-            this.cmItemNotIgnore.Size = new System.Drawing.Size(169, 22);
+            this.cmItemNotIgnore.Size = new System.Drawing.Size(229, 22);
             this.cmItemNotIgnore.Text = "Взять на контроль";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(226, 6);
+            // 
+            // cmItemIgnoreAllModules
+            // 
+            this.cmItemIgnoreAllModules.Name = "cmItemIgnoreAllModules";
+            this.cmItemIgnoreAllModules.Size = new System.Drawing.Size(229, 22);
+            this.cmItemIgnoreAllModules.Text = "Снять с контроля все модули";
+            // 
+            // cmItemNotIgnoreAllModules
+            // 
+            this.cmItemNotIgnoreAllModules.Name = "cmItemNotIgnoreAllModules";
+            this.cmItemNotIgnoreAllModules.Size = new System.Drawing.Size(229, 22);
+            this.cmItemNotIgnoreAllModules.Text = "Взять на контроль все модули";
             // 
             // panel1
             // 
@@ -196,11 +219,11 @@
             // notifyIcon
             // 
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.notifyIcon.BalloonTipText = "Программа продолжает работу в сввернутом режиме.";
+            this.notifyIcon.BalloonTipText = "Программа продолжает работу в фоновом режиме.";
             this.notifyIcon.BalloonTipTitle = "Внимание";
             this.notifyIcon.ContextMenuStrip = this.cmMemuTray;
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.Text = "notifyIcon1";
+            this.notifyIcon.Text = "Shutdown diagnostic";
             // 
             // cmMemuTray
             // 
@@ -209,24 +232,24 @@
             this.toolStripSeparator1,
             this.cmExit});
             this.cmMemuTray.Name = "cmMemuTray";
-            this.cmMemuTray.Size = new System.Drawing.Size(153, 76);
-            // 
-            // cmExit
-            // 
-            this.cmExit.Name = "cmExit";
-            this.cmExit.Size = new System.Drawing.Size(152, 22);
-            this.cmExit.Text = "Выоход";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.cmMemuTray.Size = new System.Drawing.Size(150, 54);
             // 
             // cmShowWindow
             // 
             this.cmShowWindow.Name = "cmShowWindow";
-            this.cmShowWindow.Size = new System.Drawing.Size(152, 22);
+            this.cmShowWindow.Size = new System.Drawing.Size(149, 22);
             this.cmShowWindow.Text = "Показать окно";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
+            // 
+            // cmExit
+            // 
+            this.cmExit.Name = "cmExit";
+            this.cmExit.Size = new System.Drawing.Size(149, 22);
+            this.cmExit.Text = "Выход";
             // 
             // DiagnosticWindow
             // 
@@ -264,6 +287,9 @@
         private System.Windows.Forms.ToolStripMenuItem cmExit;
         private System.Windows.Forms.ToolStripMenuItem cmShowWindow;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem cmItemIgnoreAllModules;
+        private System.Windows.Forms.ToolStripMenuItem cmItemNotIgnoreAllModules;
     }
 }
 

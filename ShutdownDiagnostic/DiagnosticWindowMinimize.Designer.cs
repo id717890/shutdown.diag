@@ -56,11 +56,11 @@
             // notifyIconMinimize
             // 
             this.notifyIconMinimize.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.notifyIconMinimize.BalloonTipText = "Программа продолжает работу в сввернутом режиме.";
+            this.notifyIconMinimize.BalloonTipText = "Программа продолжает работу в фоновом режиме.";
             this.notifyIconMinimize.BalloonTipTitle = "Внимание";
             this.notifyIconMinimize.ContextMenuStrip = this.cmMenuTray;
             this.notifyIconMinimize.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIconMinimize.Icon")));
-            this.notifyIconMinimize.Text = "notifyIcon1";
+            this.notifyIconMinimize.Text = "Shutdown diagnostic";
             // 
             // cmMenuTray
             // 

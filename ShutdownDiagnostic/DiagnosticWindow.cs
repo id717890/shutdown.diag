@@ -60,6 +60,16 @@ namespace ShutdownDiagnostic
 
         public void Attach(IDiagnosticPresenterCallback callback)
         {
+            cmItemIgnoreAllModules.Click += (sender, e) =>
+            {
+                callback.OnSetIgnoreAllModules(true);
+            };
+
+            cmItemNotIgnoreAllModules.Click += (sender, e) =>
+            {
+                callback.OnSetIgnoreAllModules(false);
+            };
+
             notifyIcon.DoubleClick += (sender, e) =>
             {
                 _closeState = 0;

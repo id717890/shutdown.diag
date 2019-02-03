@@ -96,6 +96,8 @@ namespace ShutdownDiagnostic
                                                     var statementType = statement.Attribute("type");
                                                     var statementVerifyIf = statement.Attribute("verifyif");
                                                     var allowQualityBad = statement.Attribute("allowbad");
+                                                    var module = statement.Attribute("module");
+
                                                     var statementTag = statement.Value;
 
                                                     if (!string.IsNullOrEmpty(statementTag) && statementCaption != null && statementType != null && statementVerifyIf != null)
@@ -104,6 +106,7 @@ namespace ShutdownDiagnostic
                                                         {
                                                             Caption = statementCaption.Value,
                                                             TagValue = statementTag,
+                                                            IsModule = module != null ? true : false,
                                                             Id = Guid.NewGuid()
                                                         };
                                                         if (allowQualityBad != null)
@@ -155,7 +158,8 @@ namespace ShutdownDiagnostic
                                                             TagValue = statementItem.TagValue,
                                                             VerifyIf = statementItem.VerifyIf,
                                                             Quality = statementItem.Quality,
-                                                            ParameterStatement = ParameterStatement.OpcTag
+                                                            ParameterStatement = ParameterStatement.OpcTag,
+                                                            IsModule = statementItem.IsModule
                                                         });
                                                     }
                                                 }
@@ -468,6 +472,17 @@ namespace ShutdownDiagnostic
                 var s = _model.GridDataList.Where(x => x.StatementId == id);
                 var statement = _model.GridDataList.SingleOrDefault(x => x.StatementId == id);
                 if (statement !=null) statement.IsIgnore = isIgnore;
+            }
+        }
+
+        public void OnSetIgnoreAllModules(bool isIgnore)
+        {
+            if (_model != null && _model.GridDataList != null && _model.GridDataList.Any())
+            {
+                foreach (var statement in _model.GridDataList.Where(x=>x.IsModule))
+                {
+                    statement.IsIgnore = isIgnore;
+                }
             }
         }
         #endregion
